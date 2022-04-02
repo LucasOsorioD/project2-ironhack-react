@@ -6,7 +6,7 @@ import {Link} from "react-router-dom"
     return (
       <nav className="bg-primary">
         <div> 
-          <p>Project 2</p>
+          <p>Project 2- React</p>
         </div>
       </nav>
     );
