@@ -5,8 +5,19 @@ import {Link} from "react-router-dom"
 
     return (
       <nav className="bg-primary">
-        <div> 
-          <p>Project 2- React</p>
+        <div>
+          <div> 
+            <p>Project 2- React</p>
+          </div>
+          <div>
+            My Projects
+          </div>
+          <div>
+            Create
+          </div>
+          <div>
+            Charts
+          </div>
         </div>
       </nav>
     );

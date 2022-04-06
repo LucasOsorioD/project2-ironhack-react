@@ -1,7 +1,7 @@
 function NewProject(){
     return(
         <div>
-            
+            New Projects
         </div>
     );
 }
