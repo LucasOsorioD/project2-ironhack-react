@@ -7,6 +7,7 @@ import MyProjects from "./MyProjects";
 import MyTasks from "./MyTasks";
 import NewProject from "./NewProject";
 import Chart from "./Charts";
+import NotFound from "./NotFound"
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<MyProjects />} />
           <Route path="/mytasks" element={<MyTasks />} />
           <Route path="/chart" element={<Chart />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
     </div>
   );
