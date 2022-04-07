@@ -1,5 +1,5 @@
-
 import Card from "react-bootstrap/Card";
+import Charts from "./Charts";
 
 function MyProjects() {
   return (
@@ -13,19 +13,26 @@ function MyProjects() {
           }}
           as="h5"
         >
-          #Project name
+          #Projeto 01
         </Card.Header>
         <Card.Body>
-          {/* <Card.Title>Special title treatment</Card.Title> */}
-          <Card.Text >
-       
-            <p>Contributors</p>
-           
-            <p>Total of tasks</p>
-           
-            <p>Project status</p>
-     
-            <p>Work progress</p>
+          <Charts
+            style={{
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+          />
+          <Card.Text
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+            }}
+          >
+            <p>contributors</p>
+            <p>total of tasks</p>
+            <p>project status</p>
+            <p>work progress</p>
           </Card.Text>
         </Card.Body>
       </Card>
