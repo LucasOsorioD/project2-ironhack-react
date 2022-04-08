@@ -11,8 +11,8 @@ const NavBar = () => {
           backgroundColor: "#969696",
           color: "white",
           display: "flex",
-          alignItems: "center",
-          marginBottom: "1vh",
+          alignItems: "baseLine",
+          
         }}
       >
         <div
@@ -23,7 +23,7 @@ const NavBar = () => {
           <img
             src={cardinator_logo}
             alt="logo Cardinator"
-            style={{ width: "150px", marginTop:"2vh", marginBottom:"2vh" }}
+            style={{ width: "150px", marginTop:"1vh", marginBottom:"1vh" }}
           />
         </div>
         <div
@@ -44,7 +44,7 @@ const NavBar = () => {
             <strong>charts</strong>
           </div>
         </div>
-        <div style={{ display:"flex", fontSize:"2.5vh", marginLeft:"93vh"}}>
+        <div style={{ display:"flex", fontSize:"2.5vh", marginLeft:"85vh"}}>
           <strong>Hello, Nat </strong>
           <img src={avatar1} alt="Icone representando uma mulher" style={{width:"35px", marginLeft:"1.5vh"}}/>
         </div>
@@ -52,4 +52,5 @@ const NavBar = () => {
     </nav>
   );
 };
+
 export default NavBar;
