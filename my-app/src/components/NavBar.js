@@ -1,4 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
+import cardinator_logo from "../imgs/cardinator_logo.png";
+import avatar1 from "../imgs/avatar1.png"
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -6,24 +8,45 @@ const NavBar = () => {
     <nav className="bg-primary">
       <div
         style={{
+          backgroundColor: "#969696",
+          color: "white",
           display: "flex",
-          justifyContent: "space-around",
           alignItems: "center",
-          backgroundColor: "#C4C4C4",
-          color:"white"
+          marginBottom: "1vh",
         }}
       >
-        <div>
-          <p>Project 2- React</p>
+        <div
+          style={{ marginLeft: "7vh" }}
+          className="icon"
+          onClick={() => navigate("/")}
+        >
+          <img
+            src={cardinator_logo}
+            alt="logo Cardinator"
+            style={{ width: "150px", marginTop:"2vh", marginBottom:"2vh" }}
+          />
         </div>
-        <div className="icon" onClick={() => navigate("/")}>
-          <strong>My Projects</strong>
+        <div
+          style={{
+            justifyContent: "space-around",
+            flexDirection: "row",
+            display: "flex",
+            fontSize: "2.5vh"
+          }}
+        >
+          <div className="icon" onClick={() => navigate("/")} style={{marginRight:"8vh", marginLeft:"15vh"}}>
+            <strong>my projects</strong>
+          </div>
+          <div className="icon" onClick={() => navigate("/mytasks")} style={{marginRight:"8vh", marginLeft:"3vh"}}>
+            <strong>create</strong>
+          </div>
+          <div className="icon" onClick={() => navigate("/chart")} style={{marginRight:"3vh", marginLeft:"3vh"}}>
+            <strong>charts</strong>
+          </div>
         </div>
-        <div className="icon" onClick={() => navigate("/mytasks")}>
-        <strong>Create</strong>
-        </div>
-        <div className="icon" onClick={() => navigate("/chart")}>
-        <strong>Charts</strong>
+        <div style={{ display:"flex", fontSize:"2.5vh", marginLeft:"93vh"}}>
+          <strong>Hello, Nat </strong>
+          <img src={avatar1} alt="Icone representando uma mulher" style={{width:"35px", marginLeft:"1.5vh"}}/>
         </div>
       </div>
     </nav>
