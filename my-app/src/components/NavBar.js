@@ -8,7 +8,7 @@ import {Link} from "react-router-dom"
         <div>
           <p>my projects</p>
         </div>
-      </nav>
+      </nav> //comentsß
     );
 }
 export default NavBar;
