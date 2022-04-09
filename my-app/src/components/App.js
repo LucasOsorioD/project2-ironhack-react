@@ -8,7 +8,6 @@ import MyTasks from "./MyTasks";
 import NewProject from "./NewProject";
 import Chart from "./Charts";
 import NotFound from "./NotFound";
-import API from "./API";
 
 function App() {
   return (
@@ -21,7 +20,6 @@ function App() {
         <Route path="/mytasks" element={<MyTasks />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <API />
     </div>
   );
 }
