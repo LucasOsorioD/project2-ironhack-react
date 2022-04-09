@@ -4,13 +4,13 @@ import Chart from "chart.js/auto";
 import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Graph from "./Graph";
 
 function MyProjects() {
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
   const [charts, setCharts] = useState(null);
   const canvasRef = useRef();
-  //ref é uma variavel que nao força recarregar a tela porem armazena o conteudo atual
 
   useEffect(() => {
     async function fetchData() {
@@ -30,7 +30,7 @@ function MyProjects() {
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
       setCharts((grafico) => {
-        console.log(grafico)
+        console.log(grafico);
         if (grafico) {
           grafico.destroy();
         }
@@ -41,7 +41,7 @@ function MyProjects() {
           data: {
             datasets: [
               {
-                data: [35, 65],
+                data: [0, 7],
                 fill: true,
                 borderColor: "#EAEAEA",
                 backgroundColor: ["#F9c262", "#EAEAEA"],
@@ -55,7 +55,7 @@ function MyProjects() {
       });
     }
   }, [projectObj]);
-  console.log(charts);
+
   return (
     <div style={{ marginLeft: "12vh", marginTop: "12vh" }}>
       {projectObj.map((items) => {
@@ -87,7 +87,21 @@ function MyProjects() {
                   bottom: "2rem",
                 }}
               >
-                <canvas id="myChart" width="150" height="150" ref={canvasRef} />
+                <Graph
+                  data={{
+                    datasets: [
+                      {
+                        data: [2, 5],
+                        //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
+                        fill: true,
+                        borderColor: "#EAEAEA",
+                        backgroundColor: ["#F9c262", "#EAEAEA"],
+                        tension: 0.1,
+                      },
+                    ],
+                  }}
+                  //esse 'Graph' foi a forma que deu para fazer migrando o nosso canvas para um elemento a parte (ate fica mais organizado)
+                />
               </div>
               <div
                 style={{
