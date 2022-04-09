@@ -121,7 +121,7 @@ function MyProjects() {
                   flexDirection: "column",
                 }}
               >
-                <p style={{ color: "#515151" }} className="mb-1">
+                <p style={{ color: "#515151" }} className="mb-1" id="status">
                   active
                 </p>
 
