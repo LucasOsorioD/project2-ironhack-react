@@ -24,6 +24,7 @@ function MyProjects() {
       }
     }
     fetchData();
+
   }, []);
 
   useEffect(() => {
@@ -58,6 +59,8 @@ function MyProjects() {
 
   return (
     <div style={{ marginLeft: "12vh", marginTop: "12vh" }}>
+
+    
       {projectObj.map((items) => {
         return (
           <Card
@@ -65,6 +68,7 @@ function MyProjects() {
             style={{ width: "18rem", borderRadius: "1rem" }}
             onClick={() => navigate("/mytasks")}
             key={items._id}
+
           >
             <Card.Header
               style={{
@@ -148,6 +152,19 @@ function MyProjects() {
                     {items.totalAmountTasks}
                   </p>
 
+                <p style={{ color: "#F9c262" }}> total of tasks</p>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  flexDirection: "column",
+                }}
+              >
+                <p style={{ color: "#515151" }} className="mb-1" id="status">
+                  active
+                </p>
+
                   <hr
                     style={{
                       width: "4.8rem",
@@ -156,7 +173,7 @@ function MyProjects() {
                       borderStyle: "none none dotted",
                       backgroundColor: "#fff",
                     }}
-                  />
+
 
                   <p style={{ color: "#F9c262" }}> total of tasks</p>
                 </div>
@@ -219,16 +236,3 @@ function MyProjects() {
 }
 export default MyProjects;
 
-//Card do projeto-
-
-//Pegar o total de tasks do projeto e colocar no card;
-//O status do card é baseado em três coisas:
-//1. Status "completo" será criado quando todas as tasks estiverem finalizadas;
-//2. Status "pendente" acontecerá ao usuário selecionar a opção "stop project";
-//3. Status "active" acontecerá quando o card de projeto for criado(estado inicial);
-
-//criar gráfico de status
-// emojis :)
-
-// aba de delete, edit e stop ou restart project
-//pensar sobre os contribuidores.
