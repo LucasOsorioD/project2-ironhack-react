@@ -2,8 +2,10 @@ import Card from "react-bootstrap/Card";
 import Charts from "./Charts";
 import Chart from "chart.js/auto";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function MyProjects() {
+  const navigate = useNavigate();
   useEffect(() => {
     const ctx = document.getElementById("myChart");
 
@@ -16,8 +18,7 @@ function MyProjects() {
             data: [70, 30],
             fill: true,
             borderColor: "#EAEAEA",
-            backgroundColor:["#F9c262",
-            "#EAEAEA"],
+            backgroundColor: ["#F9c262", "#EAEAEA"],
             tension: 0.1,
           },
         ],
@@ -27,7 +28,11 @@ function MyProjects() {
 
   return (
     <div style={{ marginLeft: "12vh", marginTop: "12vh" }}>
-      <Card className="shadow" style={{ width: "18rem", borderRadius: "1rem" }}>
+      <Card
+        className="shadow"
+        style={{ width: "18rem", borderRadius: "1rem" }}
+        onClick={() => navigate("/mytasks")}
+      >
         <Card.Header
           style={{
             backgroundColor: "#F9C262",
@@ -38,7 +43,7 @@ function MyProjects() {
           }}
           as="h5"
         >
-          <strong >#project name</strong>
+          <strong>#project name</strong>
         </Card.Header>
         <Card.Body style={{ display: "flex", flexDirection: "row" }}>
           <div
@@ -116,7 +121,7 @@ function MyProjects() {
                   flexDirection: "column",
                 }}
               >
-                <p style={{ color: "#515151" }} className="mb-1">
+                <p style={{ color: "#515151" }} className="mb-1" id="status">
                   active
                 </p>
 
