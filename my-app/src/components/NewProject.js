@@ -1,5 +1,5 @@
 function NewProject() {
-  return <div>PAGINA DE CRIAÇÃO DE NOVOS PROJETOS</div>;
+  return <div>PAGINA DE CRIAÇÃO DE NOVOS PROJETOS PARA A HOME</div>;
 }
 export default NewProject;
 
