@@ -7,6 +7,7 @@ import axios from "axios";
 import Graph from "./Graph";
 
 function MyProjects() {
+
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
   const [charts, setCharts] = useState(null);
@@ -68,7 +69,6 @@ function MyProjects() {
             style={{ width: "18rem", borderRadius: "1rem" }}
             onClick={() => navigate("/mytasks")}
             key={items._id}
-
           >
             <Card.Header
               style={{
@@ -82,6 +82,7 @@ function MyProjects() {
             >
               <strong>{items.projectName}</strong>
             </Card.Header>
+
             <Card.Body style={{ display: "flex", flexDirection: "row" }}>
               <div
                 style={{
@@ -152,19 +153,6 @@ function MyProjects() {
                     {items.totalAmountTasks}
                   </p>
 
-                <p style={{ color: "#F9c262" }}> total of tasks</p>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "flex-end",
-                  flexDirection: "column",
-                }}
-              >
-                <p style={{ color: "#515151" }} className="mb-1" id="status">
-                  active
-                </p>
-
                   <hr
                     style={{
                       width: "4.8rem",
@@ -173,10 +161,17 @@ function MyProjects() {
                       borderStyle: "none none dotted",
                       backgroundColor: "#fff",
                     }}
-
+                  />
 
                   <p style={{ color: "#F9c262" }}> total of tasks</p>
                 </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-end",
+                    flexDirection: "column",
+                  }}
+                ></div>
                 <div
                   style={{
                     display: "flex",
@@ -234,5 +229,7 @@ function MyProjects() {
     </div>
   );
 }
+  
+
 export default MyProjects;
 
