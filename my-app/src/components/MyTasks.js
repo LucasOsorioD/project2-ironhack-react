@@ -2,71 +2,70 @@ import { DragDropContext } from "react-beautiful-dnd";
 import Card from "react-bootstrap/Card";
 import { useState, useEffect } from "react";
 import axios from "axios";
-function MyTasks() {
 
+function MyTasks() {
   const [selectedTask, setSelectedTask] = useState([]);
   // const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
 
   const [taskObj, setTaskObj] = useState([]);
 
-    useEffect(() => {
-      async function fetchTask() {
-        try {
-          const responseTask = await axios.get(
-            `https://ironrest.herokuapp.com/cardinatortasks/`
-          );
-          console.log(responseTask);
-          setTaskObj([...responseTask.data]);
-        } catch (err) {
-          console.error(err);
-        }
+  useEffect(() => {
+    async function fetchTask() {
+      try {
+        const responseTask = await axios.get(
+          `https://ironrest.herokuapp.com/cardinatortasks/`
+        );
+        console.log(responseTask);
+        setTaskObj([...responseTask.data]);
+      } catch (err) {
+        console.error(err);
       }
-      fetchTask();
-    }, []);
-  
+    }
+    fetchTask();
+  }, []);
 
   function deleteItems() {
     // const clone = taskObj.filter((task) => !item.includes(task._id));
 
     // setNewTask(clone);
 
-    async function fetchDeletion () {
+    async function fetchDeletion() {
       try {
         const removeTask = await axios.delete(
-          `https://ironrest.herokuapp.com/cardinatortasks/62562b1025a0880017482444`
+          `https://ironrest.herokuapp.com/cardinatortasks/62562b0e25a0880017482418`
         );
         setTaskObj([...removeTask.data]);
-        console.log(removeTask)
+        console.log(removeTask);
       } catch (err) {
         console.error(err);
+        console.log(err);
       }
-    }fetchDeletion()
+    }
+    fetchDeletion();
   }
 
-
   function selectItems(_id) {
-        const clone = [...taskObj]
-    
-        const index = clone.indexOf(_id)
-      
-        if(index > -1){
-            clone.splice(index, 1) 
-        } else {
-            clone.push(_id);
-        }
-        
-        setSelectedTask(clone);
+    const clone = [...taskObj];
+
+    const index = clone.indexOf(_id);
+
+    if (index > -1) {
+      clone.splice(index, 1);
+    } else {
+      clone.push(_id);
     }
 
-  function handleClick() {
-    if(newTask.length > 0){
+    setSelectedTask(clone);
+  }
 
-      const clone = [...taskObj]
-      clone.push(newTask)
-      setTaskObj(clone)
-  
-      setNewTask('')
+  function handleClick() {
+    if (newTask.length > 0) {
+      const clone = [...taskObj];
+      clone.push(newTask);
+      setTaskObj(clone);
+
+      setNewTask("");
       async function fetchData() {
         try {
           const addNewTask = await axios.post(
@@ -76,11 +75,12 @@ function MyTasks() {
         } catch (err) {
           console.error(err);
         }
-      }fetchData();
+      }
+      fetchData();
     }
   }
-  function handleChange(event){
-    setNewTask(event.target.value)
+  function handleChange(event) {
+    setNewTask(event.target.value);
   }
 
   return (
@@ -105,7 +105,7 @@ function MyTasks() {
                   {currentTask.name}
                   <input
                     defaultChecked={selectedTask.includes(currentTask._id)}
-                    onClick= {() => selectItems(currentTask._id)}
+                    onClick={() => selectItems(currentTask._id)}
                     className="form-check-input me-1"
                     type="checkbox"
                     value=""
