@@ -69,10 +69,8 @@ function MyProjects() {
             style={{ width: "18rem", borderRadius: "1rem" }}
             onClick={() => navigate("/mytasks")}
             key={items._id}
-
           >
             <Card.Header
-
               style={{
                 backgroundColor: "#F9C262",
                 borderTopRightRadius: "1rem",
@@ -84,7 +82,7 @@ function MyProjects() {
             >
               <strong>{items.projectName}</strong>
             </Card.Header>
-            
+
             <Card.Body style={{ display: "flex", flexDirection: "row" }}>
               <div
                 style={{
@@ -94,8 +92,6 @@ function MyProjects() {
                   bottom: "2rem",
                 }}
               >
-
-
                 <Graph
                   data={{
                     datasets: [
@@ -108,7 +104,6 @@ function MyProjects() {
                         tension: 0.1,
                       },
                     ],
-
                   }}
                   //esse 'Graph' foi a forma que deu para fazer migrando o nosso canvas para um elemento a parte (ate fica mais organizado)
                 />
@@ -145,7 +140,6 @@ function MyProjects() {
                     }}
                   />
 
-
                   <p style={{ color: "#F9c262" }}>contributors</p>
                 </div>
                 <div
@@ -159,19 +153,6 @@ function MyProjects() {
                     {items.totalAmountTasks}
                   </p>
 
-                <p style={{ color: "#F9c262" }}> total of tasks</p>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "flex-end",
-                  flexDirection: "column",
-                }}
-              >
-                <p style={{ color: "#515151" }} className="mb-1" id="status">
-                  {items.status}
-                </p>
-
                   <hr
                     style={{
                       width: "4.8rem",
@@ -180,11 +161,17 @@ function MyProjects() {
                       borderStyle: "none none dotted",
                       backgroundColor: "#fff",
                     }}
-
+                  />
 
                   <p style={{ color: "#F9c262" }}> total of tasks</p>
-
                 </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-end",
+                    flexDirection: "column",
+                  }}
+                ></div>
                 <div
                   style={{
                     display: "flex",
@@ -205,7 +192,6 @@ function MyProjects() {
                       backgroundColor: "#fff",
                     }}
                   />
-
 
                   <p style={{ color: "#F9c262" }}>project status</p>
                 </div>
