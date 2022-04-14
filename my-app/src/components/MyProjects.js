@@ -67,7 +67,7 @@ function MyProjects() {
           <Card
             className="shadow"
             style={{ width: "18rem", borderRadius: "1rem" }}
-            onClick={() => navigate("/mytasks")}
+            onClick={() => navigate("/mytasks/")}
             key={items._id}
           >
             <Card.Header
