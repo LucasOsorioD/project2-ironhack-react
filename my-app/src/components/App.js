@@ -9,9 +9,10 @@ import NewProject from "./NewProject";
 import Chart from "./Charts";
 import NotFound from "./NotFound";
 
+
 function App() {
 
-    
+
   return (
     <div className="App">
       <NavBar />
