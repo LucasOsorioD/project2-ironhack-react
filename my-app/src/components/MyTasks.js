@@ -2,13 +2,26 @@ import { DragDropContext } from "react-beautiful-dnd";
 import Card from "react-bootstrap/Card";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import {useParams} from "react-router-dom";
 
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState([]);
   // const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
+  // const {_id} = useParams();
 
-  const [taskObj, setTaskObj] = useState([]);
+  const [taskObj, setTaskObj] = useState([
+    {
+      name: "",
+      status: "",
+      projectId: "",
+      created_at: ""
+    }
+  ]);
+  //name vai ser o valor inserido no input
+  //status atualizado no kanban
+  //project id-> pegar pela rota
+  //data para ordenar no kanban
 
   useEffect(() => {
     async function fetchTask() {
@@ -25,25 +38,30 @@ function MyTasks() {
     fetchTask();
   }, []);
 
-  function deleteItems() {
-    // const clone = taskObj.filter((task) => !item.includes(task._id));
+  // function deleteItems(task) {
+  //   // const clone = taskObj.filter((task) => !task.includes(task._id));
+  //   // setTaskObj(clone);
+    
+  // }
 
-    // setNewTask(clone);
+  // function deleteTasks(){
+  //   fetchDeletion()
+  // }
 
+  
     async function fetchDeletion() {
       try {
         const removeTask = await axios.delete(
-          `https://ironrest.herokuapp.com/cardinatortasks/62562b0e25a0880017482418`
-        );
-        setTaskObj([...removeTask.data]);
-        console.log(removeTask);
-      } catch (err) {
-        console.error(err);
-        console.log(err);
+          `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`
+          );
+          setTaskObj([...removeTask.data]);
+        } catch (err) {
+          console.error(err);
+        }
       }
-    }
-    fetchDeletion();
-  }
+      fetchDeletion();
+
+      // console.log({_id})
 
   function selectItems(_id) {
     const clone = [...taskObj];
@@ -55,34 +73,37 @@ function MyTasks() {
     } else {
       clone.push(_id);
     }
-
-    setSelectedTask(clone);
+    
+    console.log(index);
+    //setSelectedTask(clone)
+    setSelectedTask(_id);
   }
+  console.log(selectedTask);
 
   function handleClick() {
-    if (newTask.length > 0) {
-      const clone = [...taskObj];
-      clone.push(newTask);
-      setTaskObj(clone);
+    // if (newTask.length > 0) {
+      // const clone = [...taskObj]
+      // clone.push(newTask)
+      // setTaskObj(clone)
 
-      setNewTask("");
+      // setNewTask("");
       async function fetchData() {
         try {
           const addNewTask = await axios.post(
             `https://ironrest.herokuapp.com/cardinatortasks/`
           );
-          setTaskObj([...addNewTask.data]);
+          setTaskObj([...addNewTask.data]);  
         } catch (err) {
           console.error(err);
         }
       }
       fetchData();
     }
-  }
+  
   function handleChange(event) {
     setNewTask(event.target.value);
   }
-
+    
   return (
     <div style={{ marginLeft: "12vh", marginTop: "12vh", width: "20rem" }}>
       <Card style={{ borderRadius: "0.5rem" }}>
@@ -101,7 +122,7 @@ function MyTasks() {
           <ul className="list-group " style={{ listStyle: "none" }}>
             {taskObj.map((currentTask) => (
               <div key={currentTask._id}>
-                <li className="list-group-item mb-2">
+                <li key={currentTask._id} className="list-group-item mb-2">
                   {currentTask.name}
                   <input
                     defaultChecked={selectedTask.includes(currentTask._id)}
@@ -120,7 +141,7 @@ function MyTasks() {
           <div>
             <input
               onClick={handleChange}
-              // value={newTask}
+              // value={}
               style={{ marginTop: "0.5rem", width: "18rem" }}
               type="form"
             />
@@ -132,10 +153,7 @@ function MyTasks() {
               >
                 Add
               </button>
-              <button
-                onClick={() => deleteItems(selectedTask)}
-                className="btn btn-danger mt-2 "
-              >
+              <button onClick={fetchDeletion} className="btn btn-danger mt-2 ">
                 Delete
               </button>
             </div>
