@@ -1,8 +1,9 @@
 import { DragDropContext } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
+import {Link, useNavigate} from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import EditTasks from "./EditTasks.js"
 
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
@@ -10,7 +11,7 @@ function MyTasks() {
   const [taskObj, setTaskObj] =useState({
     name:""
   });
-  // const {_id} = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchTask() {
@@ -39,8 +40,6 @@ function MyTasks() {
        }
      }
      fetchDeletion();
-     
-
 
   function handleClick() {
     
@@ -49,7 +48,6 @@ function MyTasks() {
         const addNewTask = await axios.post(
           "https://ironrest.herokuapp.com/cardinatortasks/", taskObj
         )
-        // setTaskObj([...addNewTask.data]);
       } catch (err) {
         console.error(err);
       }
@@ -60,23 +58,7 @@ function MyTasks() {
   function handleChange(event) {
     setTaskObj({...taskObj, [event.target.name]:event.target.value});
   }
-  // console.log(taskObj)
-
-  // function selectItems(_id) {
-  //   const clone = [...taskList];
-
-  //   const index = clone.indexOf(_id);
-
-  //   if (index > -1) {
-  //     clone.splice(index, 1);
-  //   } else {
-  //     clone.push(_id);
-  //   }
-
-  //   setSelectedTask(_id);
-  // }
-  // console.log(selectedTask);
-
+ 
   return (
     <div style={{ marginLeft: "12vh", marginTop: "12vh", width: "20rem" }}>
       <Card style={{ borderRadius: "0.5rem" }}>
@@ -97,6 +79,7 @@ function MyTasks() {
               <div key={currentTask._id}>
                 <li key={currentTask._id} className="list-group-item mb-2">
                   {currentTask.name}
+                  <EditTasks />
                   <input
                     // checked={selectedTask == currentTask._id)}
                     onClick={() => setSelectedTask(currentTask._id)}
@@ -122,13 +105,21 @@ function MyTasks() {
 
             <div>
               <button
-                onClick={handleClick}
+                onClick={() => {
+                 handleClick(); navigate("/mytasks");}}
                 style={{ marginRight: "1rem", marginLeft: "8.8rem" }}
                 className="btn btn-secondary mt-2"
               >
                 Add
               </button>
-              <button className="btn btn-danger mt-2 ">Delete</button>
+              <button
+                className="btn btn-danger mt-2 "
+                onClick={() => {
+                  fetchDeletion(); navigate("/mytasks");}
+                }
+              >
+                Delete
+              </button>
             </div>
           </div>
         </Card.Body>
