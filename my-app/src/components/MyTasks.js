@@ -1,15 +1,15 @@
 import { DragDropContext } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
-import EditTasks from "./EditTasks.js"
+import EditTasks from "./EditTasks.js";
 
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
   const [taskList, setTaskList] = useState([]);
-  const [taskObj, setTaskObj] =useState({
-    name:""
+  const [taskObj, setTaskObj] = useState({
+    name: "",
   });
   const navigate = useNavigate();
 
@@ -28,26 +28,24 @@ function MyTasks() {
     fetchTask();
   }, []);
 
-    
-     async function fetchDeletion() {
-       try {
-         const removeTask = await axios.delete(
-           `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`
-         );
-          
-       } catch (err) {
-         console.error(err);
-       }
-     }
-     fetchDeletion();
+  async function fetchDeletion() {
+    try {
+      const removeTask = await axios.delete(
+        `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`
+      );
+    } catch (err) {
+      console.error(err);
+    }
+    fetchDeletion();
+  }
 
   function handleClick() {
-    
     async function fetchData() {
       try {
         const addNewTask = await axios.post(
-          "https://ironrest.herokuapp.com/cardinatortasks/", taskObj
-        )
+          "https://ironrest.herokuapp.com/cardinatortasks/",
+          taskObj
+        );
       } catch (err) {
         console.error(err);
       }
@@ -56,9 +54,9 @@ function MyTasks() {
   }
 
   function handleChange(event) {
-    setTaskObj({...taskObj, [event.target.name]:event.target.value});
+    setTaskObj({ ...taskObj, [event.target.name]: event.target.value });
   }
- 
+
   return (
     <div style={{ marginLeft: "12vh", marginTop: "12vh", width: "20rem" }}>
       <Card style={{ borderRadius: "0.5rem" }}>
@@ -106,7 +104,9 @@ function MyTasks() {
             <div>
               <button
                 onClick={() => {
-                 handleClick(); navigate("/mytasks");}}
+                  handleClick();
+                  navigate("/mytasks");
+                }}
                 style={{ marginRight: "1rem", marginLeft: "8.8rem" }}
                 className="btn btn-secondary mt-2"
               >
@@ -115,8 +115,9 @@ function MyTasks() {
               <button
                 className="btn btn-danger mt-2 "
                 onClick={() => {
-                  fetchDeletion(); navigate("/mytasks");}
-                }
+                  fetchDeletion();
+                  navigate("/mytasks");
+                }}
               >
                 Delete
               </button>
