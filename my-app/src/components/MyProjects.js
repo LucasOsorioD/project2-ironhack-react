@@ -7,7 +7,6 @@ import axios from "axios";
 import Graph from "./Graph";
 
 function MyProjects() {
-
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
   const [charts, setCharts] = useState(null);
@@ -25,7 +24,6 @@ function MyProjects() {
       }
     }
     fetchData();
-
   }, []);
 
   useEffect(() => {
@@ -60,8 +58,6 @@ function MyProjects() {
 
   return (
     <div style={{ marginLeft: "12vh", marginTop: "12vh" }}>
-
-    
       {projectObj.map((items) => {
         return (
           <Card
@@ -229,7 +225,5 @@ function MyProjects() {
     </div>
   );
 }
-  
 
 export default MyProjects;
-
