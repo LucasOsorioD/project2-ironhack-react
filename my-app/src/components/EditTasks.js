@@ -1,44 +1,29 @@
 import axios from "axios";
-
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
-import {useState} from "react";
-
-function EditTasks() {
-
-  async function fetchUpdate(){
-    try {
-      const updateTask = await axios.put(
-        `https://ironrest.herokuapp.com/cardinatortasks/`
-      );
-      }catch(err) {
-        console.error(err);
-      }
-    } fetchUpdate();  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+function EditTasks(props) {
 
   return (
     <div>
-      <Button variant="secondary" onClick={handleShow}></Button>
-
-      <Modal show={show} onHide={handleClose}>
-       
+      <Modal show={props.show} onHide={props.handleClose}>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Task Name</Form.Label>
-              <Form.Control type="form" />
+              <Form.Control type="form"  onChange={props.handleChange}
+              value={props.value}
+              name={props.name}
+              style={{ marginTop: "0.5rem", width: "18rem" }}/>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={props.handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={props.handleUpdate}>
             Save Changes
           </Button>
         </Modal.Footer>

@@ -1,17 +1,28 @@
 import { DragDropContext } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
-import EditTasks from "./EditTasks.js"
+import EditTasks from "./EditTasks.js";
+import Button from "react-bootstrap/Button";
 
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
   const [taskList, setTaskList] = useState([]);
-  const [taskObj, setTaskObj] =useState({
-    name:""
+  const [taskObj, setTaskObj] = useState({
+    name: "",
   });
   const navigate = useNavigate();
+  const handleShow = (id) => {
+    setSelectedTask(id);
+    setShowModal(true);
+  };
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
+
+  function refreshPage() {
+    window.location.reload(false);
+  }
 
   useEffect(() => {
     async function fetchTask() {
@@ -28,26 +39,24 @@ function MyTasks() {
     fetchTask();
   }, []);
 
-    
-     async function fetchDeletion() {
-       try {
-         const removeTask = await axios.delete(
-           `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`
-         );
-          
-       } catch (err) {
-         console.error(err);
-       }
-     }
-     fetchDeletion();
+  async function fetchDeletion() {
+    try {
+      const removeTask = await axios.delete(
+        `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`
+      );
+    } catch (err) {
+      console.error(err);
+    }
+    fetchDeletion();
+  }
 
   function handleClick() {
-    
     async function fetchData() {
       try {
         const addNewTask = await axios.post(
-          "https://ironrest.herokuapp.com/cardinatortasks/", taskObj
-        )
+          "https://ironrest.herokuapp.com/cardinatortasks/",
+          taskObj
+        );
       } catch (err) {
         console.error(err);
       }
@@ -55,10 +64,27 @@ function MyTasks() {
     fetchData();
   }
 
-  function handleChange(event) {
-    setTaskObj({...taskObj, [event.target.name]:event.target.value});
+  function handleUpdate() {
+    async function fetchUpdate() {
+      try {
+        const updateTask = await axios.put(
+          `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`,
+          taskObj
+        );
+        refreshPage();
+        //  colocar um alert aqui
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchUpdate();
+    handleClose();
   }
- 
+
+  function handleChange(event) {
+    setTaskObj({ ...taskObj, [event.target.name]: event.target.value });
+  }
+
   return (
     <div style={{ marginLeft: "12vh", marginTop: "12vh", width: "20rem" }}>
       <Card style={{ borderRadius: "0.5rem" }}>
@@ -79,7 +105,10 @@ function MyTasks() {
               <div key={currentTask._id}>
                 <li key={currentTask._id} className="list-group-item mb-2">
                   {currentTask.name}
-                  <EditTasks />
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleShow(currentTask._id)}
+                  ></Button>
                   <input
                     // checked={selectedTask == currentTask._id)}
                     onClick={() => setSelectedTask(currentTask._id)}
@@ -106,7 +135,9 @@ function MyTasks() {
             <div>
               <button
                 onClick={() => {
-                 handleClick(); navigate("/mytasks");}}
+                  handleClick();
+                  navigate("/mytasks");
+                }}
                 style={{ marginRight: "1rem", marginLeft: "8.8rem" }}
                 className="btn btn-secondary mt-2"
               >
@@ -115,8 +146,8 @@ function MyTasks() {
               <button
                 className="btn btn-danger mt-2 "
                 onClick={() => {
-                  fetchDeletion(); navigate("/mytasks");}
-                }
+                  fetchDeletion();
+                }}
               >
                 Delete
               </button>
@@ -124,6 +155,14 @@ function MyTasks() {
           </div>
         </Card.Body>
       </Card>
+      <EditTasks
+        show={showModal}
+        handleClose={handleClose}
+        handleUpdate={handleUpdate}
+        handleChange={handleChange}
+        value={taskObj.name}
+        name={"name"}
+      />
     </div>
   );
 }
