@@ -1,6 +1,5 @@
 import { DragDropContext } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import EditTasks from "./EditTasks.js";
@@ -12,7 +11,6 @@ function MyTasks() {
   const [taskObj, setTaskObj] = useState({
     name: "",
   });
-  const navigate = useNavigate();
   const handleShow = (id) => {
     setSelectedTask(id);
     setShowModal(true);
@@ -44,6 +42,7 @@ function MyTasks() {
       const removeTask = await axios.delete(
         `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`
       );
+      refreshPage();
     } catch (err) {
       console.error(err);
     }
@@ -57,6 +56,7 @@ function MyTasks() {
           "https://ironrest.herokuapp.com/cardinatortasks/",
           taskObj
         );
+        refreshPage();
       } catch (err) {
         console.error(err);
       }
@@ -72,7 +72,6 @@ function MyTasks() {
           taskObj
         );
         refreshPage();
-        //  colocar um alert aqui
       } catch (err) {
         console.error(err);
       }
@@ -136,7 +135,6 @@ function MyTasks() {
               <button
                 onClick={() => {
                   handleClick();
-                  navigate("/mytasks");
                 }}
                 style={{ marginRight: "1rem", marginLeft: "8.8rem" }}
                 className="btn btn-secondary mt-2"

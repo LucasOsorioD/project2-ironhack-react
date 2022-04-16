@@ -5,10 +5,13 @@ import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Graph from "./Graph";
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 function MyProjects() {
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
+  const [tasksObj, setTasksObj] = useState([]);
   const [charts, setCharts] = useState(null);
   const canvasRef = useRef();
 
@@ -23,6 +26,17 @@ function MyProjects() {
         console.error(err);
       }
     }
+    async function fetchAmount() {
+      try {
+        const amountOfTasks = await axios.get(
+          `https://ironrest.herokuapp.com/cardinatortasks`
+        );
+        setTasksObj([...amountOfTasks.data]);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchAmount();
     fetchData();
   }, []);
 
@@ -41,7 +55,7 @@ function MyProjects() {
           data: {
             datasets: [
               {
-                data: [0, 7],
+                data: [0, 1],
                 fill: true,
                 borderColor: "#EAEAEA",
                 backgroundColor: ["#F9c262", "#EAEAEA"],
@@ -63,7 +77,6 @@ function MyProjects() {
           <Card
             className="shadow"
             style={{ width: "18rem", borderRadius: "1rem" }}
-            onClick={() => navigate("/mytasks/")}
             key={items._id}
           >
             <Card.Header
@@ -77,9 +90,17 @@ function MyProjects() {
               as="h5"
             >
               <strong>{items.projectName}</strong>
+              <DropdownButton id="dropdown-basic-button" title="">
+                <Dropdown.Item href="#/action-1">Delete Project</Dropdown.Item>
+                <Dropdown.Item href="#/action-2">Edit Project</Dropdown.Item>
+                <Dropdown.Item href="#/action-3">Stop Project</Dropdown.Item>
+              </DropdownButton>
             </Card.Header>
 
-            <Card.Body style={{ display: "flex", flexDirection: "row" }}>
+            <Card.Body
+              style={{ display: "flex", flexDirection: "row" }}
+              onClick={() => navigate("/mytasks/")}
+            >
               <div
                 style={{
                   position: "relative",
@@ -92,7 +113,7 @@ function MyProjects() {
                   data={{
                     datasets: [
                       {
-                        data: [2, 5],
+                        data: [2, tasksObj.length - 2],
                         //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                         fill: true,
                         borderColor: "#EAEAEA",
@@ -146,7 +167,7 @@ function MyProjects() {
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
-                    {items.totalAmountTasks}
+                    {tasksObj.length}
                   </p>
 
                   <hr
@@ -199,7 +220,7 @@ function MyProjects() {
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
-                    {items.workProgress}
+                    {Math.round((2 / tasksObj.length) * 100)} %
                   </p>
 
                   <hr

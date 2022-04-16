@@ -17,6 +17,13 @@ function Graph(props) {
         data: { ...props.data },
       });
     });
+
+    return () => {
+      if (chart) {
+      chart.destroy();
+    }
+    }
+
   }, [props.data]);
 
   return <canvas id="myChart" width="150" height="150" ref={canvasRef} />;
