@@ -5,13 +5,17 @@ import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Graph from "./Graph";
-
+import ReactDOM from 'react-dom'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faFaceKiss} from "@fortawesome/free-solid-svg-icons"
+import {faFaceGrinBeam} from "@fortawesome/free-regular-svg-icons"
 function MyProjects() {
-
+ 
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
   const [charts, setCharts] = useState(null);
   const canvasRef = useRef();
+  
 
   useEffect(() => {
     async function fetchData() {
@@ -108,6 +112,7 @@ function MyProjects() {
                   //esse 'Graph' foi a forma que deu para fazer migrando o nosso canvas para um elemento a parte (ate fica mais organizado)
                 />
               </div>
+
               <div
                 style={{
                   display: "flex",
