@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import EditTasks from "./EditTasks.js";
+import Button from "react-bootstrap/Button";
 
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
@@ -12,6 +13,16 @@ function MyTasks() {
     name: "",
   });
   const navigate = useNavigate();
+  const handleShow = (id) => {
+    setSelectedTask(id);
+    setShowModal(true);
+  };
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
+
+  function refreshPage() {
+    window.location.reload(false);
+  }
 
   useEffect(() => {
     async function fetchTask() {
@@ -53,6 +64,23 @@ function MyTasks() {
     fetchData();
   }
 
+  function handleUpdate() {
+    async function fetchUpdate() {
+      try {
+        const updateTask = await axios.put(
+          `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`,
+          taskObj
+        );
+        refreshPage();
+        //  colocar um alert aqui
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchUpdate();
+    handleClose();
+  }
+
   function handleChange(event) {
     setTaskObj({ ...taskObj, [event.target.name]: event.target.value });
   }
@@ -77,7 +105,10 @@ function MyTasks() {
               <div key={currentTask._id}>
                 <li key={currentTask._id} className="list-group-item mb-2">
                   {currentTask.name}
-                  <EditTasks />
+                  <Button
+                    variant="secondary"
+                    onClick={() => handleShow(currentTask._id)}
+                  ></Button>
                   <input
                     // checked={selectedTask == currentTask._id)}
                     onClick={() => setSelectedTask(currentTask._id)}
@@ -116,7 +147,6 @@ function MyTasks() {
                 className="btn btn-danger mt-2 "
                 onClick={() => {
                   fetchDeletion();
-                  navigate("/mytasks");
                 }}
               >
                 Delete
@@ -125,6 +155,14 @@ function MyTasks() {
           </div>
         </Card.Body>
       </Card>
+      <EditTasks
+        show={showModal}
+        handleClose={handleClose}
+        handleUpdate={handleUpdate}
+        handleChange={handleChange}
+        value={taskObj.name}
+        name={"name"}
+      />
     </div>
   );
 }
