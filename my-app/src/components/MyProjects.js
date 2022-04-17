@@ -5,8 +5,9 @@ import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Graph from "./Graph";
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton";
+import EditProject from "./EditProject";
 
 function MyProjects() {
   const navigate = useNavigate();
@@ -71,12 +72,25 @@ function MyProjects() {
   }, [projectObj]);
 
   return (
-    <div style={{ marginLeft: "12vh", marginTop: "12vh" }}>
+    <div
+      style={{
+        marginLeft: "12vh",
+        marginTop: "12vh",
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-around",
+      }}
+    >
       {projectObj.map((items) => {
         return (
           <Card
             className="shadow"
-            style={{ width: "18rem", borderRadius: "1rem" }}
+            style={{
+              width: "18rem",
+              borderRadius: "1rem",
+              marginBottom: "1rem",
+              marginRight: "1rem",
+            }}
             key={items._id}
           >
             <Card.Header
@@ -86,11 +100,19 @@ function MyProjects() {
                 borderTopLeftRadius: "1rem",
                 paddingTop: "1.5vh",
                 paddingBottom: "1.5vh",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
               as="h5"
             >
               <strong>{items.projectName}</strong>
-              <DropdownButton id="dropdown-basic-button" title="">
+              <DropdownButton
+                id="dropdown-basic-button"
+                title=""
+                size="sm"
+                menuVariant="dark"
+              >
                 <Dropdown.Item href="#/action-1">Delete Project</Dropdown.Item>
                 <Dropdown.Item href="#/action-2">Edit Project</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Stop Project</Dropdown.Item>
