@@ -6,15 +6,17 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Graph from "./Graph";
 import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import DropdownButton from "react-bootstrap/DropdownButton"
 import EditProject from "./EditProject";
 
 function MyProjects() {
+
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
   const [tasksObj, setTasksObj] = useState([]);
   const [charts, setCharts] = useState(null);
   const canvasRef = useRef();
+  
 
   useEffect(() => {
     async function fetchData() {
@@ -70,6 +72,8 @@ function MyProjects() {
       });
     }
   }, [projectObj]);
+
+
 
   return (
     <div
