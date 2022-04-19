@@ -1,11 +1,11 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import  Mytasks from "../components/Mytasks.css"
+import Mytasks from "../components/Mytasks.css";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
-import  {v4 as uuidv4 } from "uuid"
-import PropTypes, { object } from "prop-types";
+import { v4 as uuidv4 } from "uuid";
+
 // import EditTasks from "./EditTasks.js";
 
 function MyTasks() {
@@ -14,7 +14,12 @@ function MyTasks() {
   const [taskObj, setTaskObj] = useState({
     name: "",
   });
+  const [columns, setColumns] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+
+  
 
   useEffect(() => {
     async function fetchTask() {
@@ -22,8 +27,26 @@ function MyTasks() {
         const responseTask = await axios.get(
           `https://ironrest.herokuapp.com/cardinatortasks/`
         );
-        console.log(responseTask);
+        // console.log(responseTask);
         setTaskList([...responseTask.data]);
+        setColumns([
+          {
+            id: uuidv4(),
+            name: "Todo",
+            items: [...responseTask.data],
+          },
+          {
+            id: uuidv4(),
+            name: "Doing",
+            items: [],
+          },
+          {
+            id: uuidv4(),
+            name: "Done",
+            items: [],
+          },
+        ]);
+        setLoading(false);
       } catch (err) {
         console.error(err);
       }
@@ -35,7 +58,8 @@ function MyTasks() {
     try {
       const removeTask = await axios.delete(
         `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`
-      );refreshPage();
+      );
+      refreshPage();
     } catch (err) {
       console.error(err);
     }
@@ -48,7 +72,8 @@ function MyTasks() {
         const addNewTask = await axios.post(
           "https://ironrest.herokuapp.com/cardinatortasks/",
           taskObj
-        );refreshPage();
+        );
+        refreshPage();
       } catch (err) {
         console.error(err);
       }
@@ -69,7 +94,6 @@ function MyTasks() {
     maxHeight: "60vh",
   });
 
-   
   function handleOnDragEnd(result) {
     if (!result.destination) return;
 
@@ -79,38 +103,30 @@ function MyTasks() {
 
     setTaskList(items);
   }
-  
-  
-  const columnsFromBackend = [
-    {
-    [uuidv4()]: {
-      name: "Todo",
-      items: taskList,
-    },
-    [uuidv4()]: {
-      name: "Doing",
-      tems: [],
-    },
-    [uuidv4()]: {
-      name: "Done",
-      items: [],
-    },
-  }
-];
- const [columns, setColumns] = useState(columnsFromBackend);
- 
-  return (
-    <div style={{ marginLeft: "12vh", marginTop: "12vh", width: "20rem" }}>
-      <Card style={{ borderRadius: "0.5rem" }}>
-        <Card.Header className="card-header">
-          <h5 style={{ margin: "0" }}>To Do</h5>
-        </Card.Header>
 
-        <Card.Body>
-          <DragDropContext onDragEnd={handleOnDragEnd}>
-            {Object.entries(columns).map(([id, column]) => {
-                return (
-                  <Droppable droppableId={id} key={id}>
+  return (
+    <>
+    {
+      loading ? <h1>LOADING</h1>
+      :
+      <div
+        style={{
+          display: "flex",
+          marginLeft: "12vh",
+          marginTop: "12vh",
+          justifyContent: "space-around"
+        }}
+      >
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          {columns.map((column) => {
+            return (
+              <Card style={{ borderRadius: "0.5rem", width: "21rem" }}>
+                <Card.Header className="card-header">
+                  <h5 style={{ margin: "0" }}>{column.name}</h5>
+                </Card.Header>
+
+                <Card.Body>
+                  <Droppable droppableId={column.id} key={column.id}>
                     {(droppableProvided, droppableSnapshot) => (
                       <div
                         {...droppableProvided.droppableProps}
@@ -130,7 +146,7 @@ function MyTasks() {
                           className="list-group "
                           style={{ listStyle: "none", overflowY: "scroll" }}
                         >
-                          {taskList.map((currentTask, index) => (
+                          {column.items?.map((currentTask, index) => (
                             <div key={currentTask._id}>
                               <Draggable
                                 key={currentTask._id}
@@ -143,7 +159,10 @@ function MyTasks() {
                                     {...droppableProvided.dragHandleProps}
                                     ref={droppableProvided.innerRef}
                                   >
-                                    <li className="list-group-item mb-2" key={currentTask._id}>
+                                    <li
+                                      className="list-group-item mb-2"
+                                      key={currentTask._id}
+                                    >
                                       {currentTask.name}
                                       <div style={{ display: "inline-flex" }}>
                                         <input
@@ -171,46 +190,46 @@ function MyTasks() {
                       </div>
                     )}
                   </Droppable>
-                );
-            })}
-          </DragDropContext>
+                  {
+                    column.name === "Todo" &&
+                    <div>
+                      <input
+                        onChange={handleChange}
+                        value={taskObj.name}
+                        name="name"
+                        style={{ marginTop: "0.5rem", width: "18rem" }}
+                        type="form"
+                      />
 
-          <div>
-            <input
-              onChange={handleChange}
-              value={taskObj.name}
-              name="name"
-              style={{ marginTop: "0.5rem", width: "18rem" }}
-              type="form"
-            />
-
-            <div>
-              <button
-                onClick={() => {
-                  handleClick();
-                }}
-                style={{ marginRight: "1rem", marginLeft: "8.8rem" }}
-                className="btn btn-secondary mt-2"
-              >
-                Add
-              </button>
-              <button
-                className="btn btn-danger mt-2 "
-                onClick={() => {
-                  fetchDeletion();
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-    </div>
+                      <div>
+                        <button
+                          onClick={() => {
+                            handleClick();
+                          }}
+                          style={{ marginRight: "1rem", marginLeft: "8.8rem" }}
+                          className="btn btn-secondary mt-2"
+                        >
+                          Add
+                        </button>
+                        <button
+                          className="btn btn-danger mt-2 "
+                          onClick={() => {
+                            fetchDeletion();
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  }
+                </Card.Body>
+              </Card>
+            );
+          })}
+        </DragDropContext>
+      </div>
+    }
+    </>
   );
 }
 export default MyTasks;
-
-  
- 
-    
