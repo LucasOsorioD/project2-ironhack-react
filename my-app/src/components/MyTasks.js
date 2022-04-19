@@ -14,7 +14,7 @@ function MyTasks() {
   const [taskObj, setTaskObj] = useState({
     name: "",
   });
-  const [columns, setColumns] = useState([]);
+  const [columns, setColumns] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -29,23 +29,20 @@ function MyTasks() {
         );
         // console.log(responseTask);
         setTaskList([...responseTask.data]);
-        setColumns([
-          {
-            id: uuidv4(),
+        setColumns({
+          [uuidv4()]: {
             name: "Todo",
             items: [...responseTask.data],
           },
-          {
-            id: uuidv4(),
+          [uuidv4()]: {
             name: "Doing",
             items: [],
           },
-          {
-            id: uuidv4(),
+          [uuidv4()]: {
             name: "Done",
             items: [],
           },
-        ]);
+        });
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -94,141 +91,177 @@ function MyTasks() {
     maxHeight: "60vh",
   });
 
-  function handleOnDragEnd(result) {
+  function handleOnDragEnd(result, columns, setColumns) {
     if (!result.destination) return;
+    const { source, destination } = result;
+    
+    // console.log("columns", columns)
+    // console.log("source", source);
 
-    const items = Array.from(taskList);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setTaskList(items);
+    if(source.droppableId !== destination.droppableId) {
+      const sourceColumn = columns[source.droppableId]; //coluna de origem
+      const destColumn = columns[destination.droppableId]; //coluna de destino
+      const sourceItems = [...sourceColumn.items]; //item de origem = ...colunadedestino. items
+      const destItems = [...destColumn.items];
+      const [reorderedItem] = sourceItems.splice(source.index, 1);
+      destItems.splice(destination.index, 0, reorderedItem);
+  
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...sourceColumn,
+          items: sourceItems
+        },
+        [destination.droppableId]: {
+          ...destColumn,
+          items: destItems
+        }
+      });
+    } else {
+      const column = columns[source.droppableId];
+      const copiedItems = [...column.items];
+      const [removed] = copiedItems.splice(source.index, 1);
+      copiedItems.splice(destination.index, 0, removed);
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...column,
+          items: copiedItems,
+        },
+      });
+    }
   }
 
   return (
     <>
-    {
-      loading ? <h1>LOADING</h1>
-      :
-      <div
-        style={{
-          display: "flex",
-          marginLeft: "12vh",
-          marginTop: "12vh",
-          justifyContent: "space-around"
-        }}
-      >
-        <DragDropContext onDragEnd={handleOnDragEnd}>
-          {columns.map((column) => {
-            return (
-              <Card style={{ borderRadius: "0.5rem", width: "21rem" }}>
-                <Card.Header className="card-header">
-                  <h5 style={{ margin: "0" }}>{column.name}</h5>
-                </Card.Header>
+      {loading ? (
+        <h1 style={{ marginTop: "10rem" }}>loading...</h1>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            marginLeft: "12vh",
+            marginTop: "12vh",
+            justifyContent: "space-around",
+          }}
+        >
+          <DragDropContext onDragEnd={result => handleOnDragEnd(result, columns, setColumns)}>
+            {Object.entries(columns).map(([columnId, column]) => {
+              return (
+                <Card style={{ borderRadius: "0.5rem", width: "21rem" }}>
+                  <Card.Header className="card-header">
+                    <h5 style={{ margin: "0" }}>{column.name}</h5>
+                  </Card.Header>
 
-                <Card.Body>
-                  <Droppable droppableId={column.id} key={column.id}>
-                    {(droppableProvided, droppableSnapshot) => (
-                      <div
-                        {...droppableProvided.droppableProps}
-                        ref={droppableProvided.innerRef}
-                        style={getListStyle(
-                          droppableSnapshot.isDraggingOver
-                          // this.props.overflow
-                        )}
-                        onScroll={(e) =>
-                          console.log(
-                            "current scrollTop",
-                            e.currentTarget.scrollTop
-                          )
-                        }
-                      >
-                        <ul
-                          className="list-group "
-                          style={{ listStyle: "none", overflowY: "scroll" }}
+                  <Card.Body>
+                    <Droppable droppableId={columnId} key={columnId}>
+                      {(droppableProvided, droppableSnapshot) => (
+                        <div
+                          {...droppableProvided.droppableProps}
+                          ref={droppableProvided.innerRef}
+                          style={{
+                            background: droppableSnapshot.isDraggingOver
+                              ? "lightblue"
+                              : "#ededed",
+                            width: "100%",
+                            // height: "85%",
+                          }}
+                          onScroll={(e) =>
+                            console.log(
+                              "current scrollTop",
+                              e.currentTarget.scrollTop
+                            )
+                          }
                         >
-                          {column.items?.map((currentTask, index) => (
-                            <div key={currentTask._id}>
-                              <Draggable
-                                key={currentTask._id}
-                                draggableId={currentTask._id}
-                                index={index}
-                              >
-                                {(droppableProvided, droppableSnapshot) => (
-                                  <div
-                                    {...droppableProvided.draggableProps}
-                                    {...droppableProvided.dragHandleProps}
-                                    ref={droppableProvided.innerRef}
-                                  >
-                                    <li
-                                      className="list-group-item mb-2"
-                                      key={currentTask._id}
+                          <ul
+                            className="list-group "
+                            style={{ listStyle: "none" }}
+                          >
+                            {column.items?.map((currentTask, index) => (
+                              <div key={currentTask._id}>
+                                <Draggable
+                                  key={currentTask._id}
+                                  draggableId={currentTask._id}
+                                  index={index}
+                                >
+                                  {(droppableProvided, droppableSnapshot) => (
+                                    <div
+                                      {...droppableProvided.draggableProps}
+                                      {...droppableProvided.dragHandleProps}
+                                      ref={droppableProvided.innerRef}
                                     >
-                                      {currentTask.name}
-                                      <div style={{ display: "inline-flex" }}>
-                                        <input
-                                          onClick={() =>
-                                            setSelectedTask(currentTask._id)
-                                          }
-                                          className="form-check-input me-1"
-                                          type="checkbox"
-                                          value=""
-                                          aria-label="..."
-                                          style={{
-                                            position: "relative",
-                                            right: "7rem",
-                                          }}
-                                        />
-                                      </div>
-                                    </li>
-                                  </div>
-                                )}
-                              </Draggable>
-                            </div>
-                          ))}
-                          {droppableProvided.placeholder}
-                        </ul>
+                                      <li
+                                        className="list-group-item mb-2"
+                                        key={currentTask._id}
+                                      >
+                                        {currentTask.name}
+                                        <div style={{ display: "inline-flex" }}>
+                                          <input
+                                            onClick={() =>
+                                              setSelectedTask(currentTask._id)
+                                            }
+                                            className="form-check-input me-1"
+                                            type="checkbox"
+                                            value=""
+                                            aria-label="..."
+                                            style={{
+                                              position: "relative",
+                                              right: "7rem",
+                                            }}
+                                          />
+                                        </div>
+                                      </li>
+                                    </div>
+                                  )}
+                                </Draggable>
+                              </div>
+                            ))}
+                            {droppableProvided.placeholder}
+                          </ul>
+                        </div>
+                      )}
+                    </Droppable>
+                    {column.name === "Todo" && (
+                      <div>
+                        <input
+                          onChange={handleChange}
+                          value={taskObj.name}
+                          name="name"
+                          style={{ marginTop: "0.5rem", width: "18rem" }}
+                          type="form"
+                        />
+
+                        <div>
+                          <button
+                            onClick={() => {
+                              handleClick();
+                            }}
+                            style={{
+                              marginRight: "1rem",
+                              marginLeft: "8.8rem",
+                            }}
+                            className="btn btn-secondary mt-2"
+                          >
+                            Add
+                          </button>
+                          <button
+                            className="btn btn-danger mt-2 "
+                            onClick={() => {
+                              fetchDeletion();
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     )}
-                  </Droppable>
-                  {
-                    column.name === "Todo" &&
-                    <div>
-                      <input
-                        onChange={handleChange}
-                        value={taskObj.name}
-                        name="name"
-                        style={{ marginTop: "0.5rem", width: "18rem" }}
-                        type="form"
-                      />
-
-                      <div>
-                        <button
-                          onClick={() => {
-                            handleClick();
-                          }}
-                          style={{ marginRight: "1rem", marginLeft: "8.8rem" }}
-                          className="btn btn-secondary mt-2"
-                        >
-                          Add
-                        </button>
-                        <button
-                          className="btn btn-danger mt-2 "
-                          onClick={() => {
-                            fetchDeletion();
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  }
-                </Card.Body>
-              </Card>
-            );
-          })}
-        </DragDropContext>
-      </div>
-    }
+                  </Card.Body>
+                </Card>
+              );
+            })}
+          </DragDropContext>
+        </div>
+      )}
     </>
   );
 }
