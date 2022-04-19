@@ -6,9 +6,11 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Graph from "./Graph";
 import ReactDOM from 'react-dom'
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faFaceKiss} from "@fortawesome/free-solid-svg-icons"
-import {faFaceGrinBeam} from "@fortawesome/free-regular-svg-icons"
+import Dropdown from "react-bootstrap/Dropdown";
+import DropdownButton from "react-bootstrap/DropdownButton"
+// import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+// import {faFaceKiss} from "@fortawesome/free-solid-svg-icons"
+// import {faFaceGrinBeam} from "@fortawesome/free-regular-svg-icons"
 function MyProjects() {
  
   const navigate = useNavigate();
@@ -62,6 +64,8 @@ function MyProjects() {
     }
   }, [projectObj]);
 
+
+
   return (
     <div style={{ marginLeft: "12vh", marginTop: "12vh" }}>
 
@@ -112,7 +116,6 @@ function MyProjects() {
                   //esse 'Graph' foi a forma que deu para fazer migrando o nosso canvas para um elemento a parte (ate fica mais organizado)
                 />
               </div>
-
               <div
                 style={{
                   display: "flex",
