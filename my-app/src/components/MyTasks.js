@@ -1,5 +1,6 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import Mytasks from "../components/Mytasks.css";
 import Card from "react-bootstrap/Card";
@@ -8,18 +9,30 @@ import { v4 as uuidv4 } from "uuid";
 
 // import EditTasks from "./EditTasks.js";
 
+
+
+import Button from "react-bootstrap/Button";
+
+
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
   const [taskList, setTaskList] = useState([]);
   const [taskObj, setTaskObj] = useState({
     name: "",
   });
+
   const [columns, setColumns] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const handleShow = (id) => {
+    setSelectedTask(id);
+    setShowModal(true);
+  };
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
 
-  
+
 
   useEffect(() => {
     async function fetchTask() {
@@ -78,6 +91,22 @@ function MyTasks() {
     fetchData();
   }
 
+  function handleUpdate() {
+    async function fetchUpdate() {
+      try {
+        const updateTask = await axios.put(
+          `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`,
+          taskObj
+        );
+        refreshPage();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchUpdate();
+    handleClose();
+  }
+
   function handleChange(event) {
     setTaskObj({ ...taskObj, [event.target.name]: event.target.value });
   }
@@ -132,6 +161,7 @@ function MyTasks() {
     }
   }
 
+
   return (
     <>
       {loading ? (
@@ -145,6 +175,7 @@ function MyTasks() {
             justifyContent: "space-around",
           }}
         >
+
           <DragDropContext onDragEnd={result => handleOnDragEnd(result, columns, setColumns)}>
             {Object.entries(columns).map(([columnId, column]) => {
               return (
@@ -152,7 +183,6 @@ function MyTasks() {
                   <Card.Header className="card-header">
                     <h5 style={{ margin: "0" }}>{column.name}</h5>
                   </Card.Header>
-
                   <Card.Body>
                     <Droppable droppableId={columnId} key={columnId}>
                       {(droppableProvided, droppableSnapshot) => (
@@ -231,6 +261,7 @@ function MyTasks() {
                           type="form"
                         />
 
+
                         <div>
                           <button
                             onClick={() => {
@@ -257,12 +288,24 @@ function MyTasks() {
                     )}
                   </Card.Body>
                 </Card>
+
               );
             })}
           </DragDropContext>
         </div>
       )}
     </>
+  <EditTasks
+        show={showModal}
+        handleClose={handleClose}
+        handleUpdate={handleUpdate}
+        handleChange={handleChange}
+        value={taskObj.name}
+        name={"name"}
+      />
+
+    
+
   );
 }
 export default MyTasks;
