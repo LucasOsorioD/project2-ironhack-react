@@ -150,8 +150,8 @@ function MyProjects() {
                     datasets: [
                       {
                         data: [
-                          tasksObj.status.includes("Done").length,
-                          tasksObj.length - tasksObj.status.includes("Done").length,
+                          2,
+                          tasksObj.length - 2,
                         ],
 
                         //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
