@@ -4,8 +4,8 @@ import Mytasks from "../components/Mytasks.css";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-
-// import EditTasks from "./EditTasks.js";
+import EditTasks from "./EditTasks.js";
+import Button from "react-bootstrap/Button";
 
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
@@ -28,8 +28,15 @@ function MyTasks() {
       items: [],
     },
   });
+
   const [loading, setLoading] = useState(true);
 
+  const handleShow = (id) => {
+    setSelectedTask(id);
+    setShowModal(true);
+  };
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
 
   useEffect(() => {
     async function fetchTask() {
@@ -92,6 +99,22 @@ function MyTasks() {
     fetchData();
   }
 
+  function handleUpdate() {
+    async function fetchUpdate() {
+      try {
+        const updateTask = await axios.put(
+          `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`,
+          taskObj
+        );
+        refreshPage();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchUpdate();
+    handleClose();
+  }
+
   function handleChange(event) {
     setTaskObj({ ...taskObj, [event.target.name]: event.target.value });
   }
@@ -103,10 +126,12 @@ function MyTasks() {
   function handleOnDragEnd(result, columns, setColumns) {
     if (!result.destination) return;
     const { source, destination } = result;
-    
+
+
+    // console.log("columns", columns)
     // console.log("source", source);
-    
-    if(source.droppableId !== destination.droppableId) {
+
+    if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId]; //coluna de origem
       const destColumn = columns[destination.droppableId]; //coluna de destino
       const sourceItems = [...sourceColumn.items]; //item de origem = ...colunadedestino. items
@@ -114,6 +139,7 @@ function MyTasks() {
       const [reorderedItem] = sourceItems.splice(source.index, 1);
       reorderedItem.status = destColumn.name;
       destItems.splice(destination.index, 0, reorderedItem);
+
       
       fetchUpdate(reorderedItem);
 
@@ -121,12 +147,12 @@ function MyTasks() {
         ...columns,
         [source.droppableId]: {
           ...sourceColumn,
-          items: sourceItems
+          items: sourceItems,
         },
         [destination.droppableId]: {
           ...destColumn,
-          items: destItems
-        }
+          items: destItems,
+        },
       });
     } else {
       const column = columns[source.droppableId];
@@ -172,14 +198,15 @@ function MyTasks() {
             justifyContent: "space-around",
           }}
         >
-          <DragDropContext onDragEnd={result => handleOnDragEnd(result, columns, setColumns)}>
+          <DragDropContext
+            onDragEnd={(result) => handleOnDragEnd(result, columns, setColumns)}
+          >
             {Object.entries(columns).map(([columnId, column]) => {
               return (
                 <Card style={{ borderRadius: "0.5rem", width: "21rem" }}>
                   <Card.Header className="card-header">
                     <h5 style={{ margin: "0" }}>{column.name}</h5>
                   </Card.Header>
-
                   <Card.Body>
                     <Droppable droppableId={columnId} key={columnId}>
                       {(droppableProvided, droppableSnapshot) => (
@@ -226,6 +253,12 @@ function MyTasks() {
                                           <div
                                             style={{ display: "inline-flex" }}
                                           >
+                                          <Button
+                                            variant="secondary"
+                                            onClick={() =>
+                                              handleShow(currentTask._id)
+                                            }
+                                          ></Button>
                                             <input
                                               onClick={() =>
                                                 setSelectedTask(currentTask._id)
@@ -263,7 +296,6 @@ function MyTasks() {
                           style={{ marginTop: "0.5rem", width: "18rem" }}
                           type="form"
                         />
-
                         <div>
                           <button
                             onClick={() => {
@@ -293,6 +325,14 @@ function MyTasks() {
               );
             })}
           </DragDropContext>
+          <EditTasks
+            show={showModal}
+            handleClose={handleClose}
+            handleUpdate={handleUpdate}
+            handleChange={handleChange}
+            value={taskObj.name}
+            name={"name"}
+          />
         </div>
       )}
       {/* <button ></button> */}

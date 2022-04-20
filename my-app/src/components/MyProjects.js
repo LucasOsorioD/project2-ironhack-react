@@ -5,19 +5,17 @@ import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Graph from "./Graph";
-import ReactDOM from 'react-dom'
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton"
-// import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-// import {faFaceKiss} from "@fortawesome/free-solid-svg-icons"
-// import {faFaceGrinBeam} from "@fortawesome/free-regular-svg-icons"
+import EditProject from "./EditProject";
+
 function MyProjects() {
- 
+
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
+  const [tasksObj, setTasksObj] = useState([]);
   const [charts, setCharts] = useState(null);
-  const canvasRef = useRef();
-  
+  const canvasRef = useRef();  
 
   useEffect(() => {
     async function fetchData() {
@@ -30,8 +28,18 @@ function MyProjects() {
         console.error(err);
       }
     }
+    async function fetchAmount() {
+      try {
+        const amountOfTasks = await axios.get(
+          `https://ironrest.herokuapp.com/cardinatortasks`
+        );
+        setTasksObj([...amountOfTasks.data]);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchAmount();
     fetchData();
-
   }, []);
 
   useEffect(() => {
@@ -49,7 +57,7 @@ function MyProjects() {
           data: {
             datasets: [
               {
-                data: [0, 7],
+                data: [0, 1],
                 fill: true,
                 borderColor: "#EAEAEA",
                 backgroundColor: ["#F9c262", "#EAEAEA"],
@@ -67,15 +75,25 @@ function MyProjects() {
 
 
   return (
-    <div style={{ marginLeft: "12vh", marginTop: "12vh" }}>
-
-    
+    <div
+      style={{
+        marginLeft: "12vh",
+        marginTop: "12vh",
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-around",
+      }}
+    >
       {projectObj.map((items) => {
         return (
           <Card
             className="shadow"
-            style={{ width: "18rem", borderRadius: "1rem" }}
-            onClick={() => navigate("/mytasks/")}
+            style={{
+              width: "18rem",
+              borderRadius: "1rem",
+              marginBottom: "1rem",
+              marginRight: "1rem",
+            }}
             key={items._id}
           >
             <Card.Header
@@ -85,13 +103,29 @@ function MyProjects() {
                 borderTopLeftRadius: "1rem",
                 paddingTop: "1.5vh",
                 paddingBottom: "1.5vh",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
               as="h5"
             >
               <strong>{items.projectName}</strong>
+              <DropdownButton
+                id="dropdown-basic-button"
+                title=""
+                size="sm"
+                menuVariant="dark"
+              >
+                <Dropdown.Item href="#/action-1">Delete Project</Dropdown.Item>
+                <Dropdown.Item href="#/action-2">Edit Project</Dropdown.Item>
+                <Dropdown.Item href="#/action-3">Stop Project</Dropdown.Item>
+              </DropdownButton>
             </Card.Header>
 
-            <Card.Body style={{ display: "flex", flexDirection: "row" }}>
+            <Card.Body
+              style={{ display: "flex", flexDirection: "row" }}
+              onClick={() => navigate("/mytasks/")}
+            >
               <div
                 style={{
                   position: "relative",
@@ -104,7 +138,7 @@ function MyProjects() {
                   data={{
                     datasets: [
                       {
-                        data: [2, 5],
+                        data: [2, tasksObj.length - 2],
                         //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                         fill: true,
                         borderColor: "#EAEAEA",
@@ -158,7 +192,7 @@ function MyProjects() {
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
-                    {items.totalAmountTasks}
+                    {tasksObj.length}
                   </p>
 
                   <hr
@@ -211,7 +245,7 @@ function MyProjects() {
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
-                    {items.workProgress}
+                    {Math.round((2 / tasksObj.length) * 100)} %
                   </p>
 
                   <hr
@@ -237,7 +271,5 @@ function MyProjects() {
     </div>
   );
 }
-  
 
 export default MyProjects;
-
