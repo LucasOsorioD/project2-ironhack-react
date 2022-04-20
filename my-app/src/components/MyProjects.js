@@ -15,8 +15,7 @@ function MyProjects() {
   const [projectObj, setProjectObj] = useState([]);
   const [tasksObj, setTasksObj] = useState([]);
   const [charts, setCharts] = useState(null);
-  const canvasRef = useRef();
-  
+  const canvasRef = useRef();  
 
   useEffect(() => {
     async function fetchData() {

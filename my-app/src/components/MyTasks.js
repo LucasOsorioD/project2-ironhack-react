@@ -1,18 +1,12 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
-
 import { Link, useNavigate } from "react-router-dom";
 import Mytasks from "../components/Mytasks.css";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-
-// import EditTasks from "./EditTasks.js";
-
-
-
+import EditTasks from "./EditTasks.js";
 import Button from "react-bootstrap/Button";
-
 
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
@@ -31,8 +25,6 @@ function MyTasks() {
   };
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => setShowModal(false);
-
-
 
   useEffect(() => {
     async function fetchTask() {
@@ -113,38 +105,32 @@ function MyTasks() {
   function refreshPage() {
     window.location.reload(false);
   }
-  const getListStyle = (isDraggingOver, overflow) => ({
-    background: isDraggingOver ? "#cceeff" : "#ebecf1",
-    // border: "5px solid #ebecf1",
-    // width: 250,
-    maxHeight: "60vh",
-  });
 
   function handleOnDragEnd(result, columns, setColumns) {
     if (!result.destination) return;
     const { source, destination } = result;
-    
+
     // console.log("columns", columns)
     // console.log("source", source);
 
-    if(source.droppableId !== destination.droppableId) {
+    if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId]; //coluna de origem
       const destColumn = columns[destination.droppableId]; //coluna de destino
       const sourceItems = [...sourceColumn.items]; //item de origem = ...colunadedestino. items
       const destItems = [...destColumn.items];
       const [reorderedItem] = sourceItems.splice(source.index, 1);
       destItems.splice(destination.index, 0, reorderedItem);
-  
+
       setColumns({
         ...columns,
         [source.droppableId]: {
           ...sourceColumn,
-          items: sourceItems
+          items: sourceItems,
         },
         [destination.droppableId]: {
           ...destColumn,
-          items: destItems
-        }
+          items: destItems,
+        },
       });
     } else {
       const column = columns[source.droppableId];
@@ -161,7 +147,6 @@ function MyTasks() {
     }
   }
 
-
   return (
     <>
       {loading ? (
@@ -175,8 +160,9 @@ function MyTasks() {
             justifyContent: "space-around",
           }}
         >
-
-          <DragDropContext onDragEnd={result => handleOnDragEnd(result, columns, setColumns)}>
+          <DragDropContext
+            onDragEnd={(result) => handleOnDragEnd(result, columns, setColumns)}
+          >
             {Object.entries(columns).map(([columnId, column]) => {
               return (
                 <Card style={{ borderRadius: "0.5rem", width: "21rem" }}>
@@ -225,7 +211,14 @@ function MyTasks() {
                                         key={currentTask._id}
                                       >
                                         {currentTask.name}
+                                        {column.name==="Todo"}
                                         <div style={{ display: "inline-flex" }}>
+                                          <Button
+                                            variant="secondary"
+                                            onClick={() =>
+                                              handleShow(currentTask._id)
+                                            }
+                                          ></Button>
                                           <input
                                             onClick={() =>
                                               setSelectedTask(currentTask._id)
@@ -260,8 +253,6 @@ function MyTasks() {
                           style={{ marginTop: "0.5rem", width: "18rem" }}
                           type="form"
                         />
-
-
                         <div>
                           <button
                             onClick={() => {
@@ -288,24 +279,20 @@ function MyTasks() {
                     )}
                   </Card.Body>
                 </Card>
-
               );
             })}
           </DragDropContext>
+          <EditTasks
+            show={showModal}
+            handleClose={handleClose}
+            handleUpdate={handleUpdate}
+            handleChange={handleChange}
+            value={taskObj.name}
+            name={"name"}
+          />
         </div>
       )}
     </>
-  <EditTasks
-        show={showModal}
-        handleClose={handleClose}
-        handleUpdate={handleUpdate}
-        handleChange={handleChange}
-        value={taskObj.name}
-        name={"name"}
-      />
-
-    
-
   );
 }
 export default MyTasks;

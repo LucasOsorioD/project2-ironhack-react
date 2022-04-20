@@ -5,7 +5,14 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
 function NewProject() {
-  const [newProj, setNewProj] = useState();
+  const [newProj, setNewProj] = useState({
+    projectName: "",
+    status: "To start",
+    workProgress: 0,
+    totalAmountTasks: 0,
+    completedTasks: 0,
+  });
+
   function refreshPage() {
     window.location.reload(false);
   }
