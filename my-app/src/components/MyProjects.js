@@ -15,6 +15,10 @@ function MyProjects() {
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
   const [tasksObj, setTasksObj] = useState([]);
+  const [newObj, setNewObj] = useState({
+    status: "To start"
+  })
+  const [selectedProject, setSelectedProject] = useState([]);
   const [charts, setCharts] = useState(null);
   const canvasRef = useRef();  
   
@@ -43,7 +47,29 @@ function MyProjects() {
     fetchAmount();
     fetchData();
   }, []);
+
+   
+    async function fetchUpdate() {
+      try {
+        const updateTask = await axios.put(
+          `https://ironrest.herokuapp.com/cardinator/${selectedProject}`,
+          newObj
+        );
+        refreshPage()
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchUpdate();
+
  
+  function refreshPage() {
+    window.location.reload(false);
+  }
+  const updateStatus = selectedProject.status
+  updateStatus.status = "inative";
+  // fetchUpdate(updateStatus);
+
   useEffect(() => {
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
@@ -75,13 +101,26 @@ function MyProjects() {
   }, [projectObj]);
 
 // console.log(tasksObj)
+// function background(projectObj) {}
 
+ const status =  projectObj.map((items) => {
+    return (items.status);
+  })
 
-// const tasks = tasksObj.status.includes("Done", 0)
-// // const doneTasks = tasks.push("Done")
-// console.log(tasks);
- const keys = Object.keys(tasksObj)
- console.log(keys);
+const tostart = status.filter((prjStatus) => prjStatus === "To start");
+const active = status.filter((prjStatus) => prjStatus === "active");
+const completed = status.filter((prjStatus) => prjStatus === "completed");
+
+ const todo = tasksObj.filter((task) => task.status === "Todo");
+ const doing = tasksObj.filter((task) => task.status === "Doing");
+ const done = tasksObj.filter((task) => task.status === "Done");
+
+  const colorMap = {
+    "To start": "#C4C4C4",
+    active: "#F9c262",
+    completed: "#5DD1B3",
+    inative: "#FC599B",
+  };
 
   return (
     <div
@@ -104,12 +143,10 @@ function MyProjects() {
               marginRight: "1rem",
             }}
             key={items._id}
-
           >
-
             <Card.Header
               style={{
-                backgroundColor: "#F9C262",
+                backgroundColor: colorMap[items.status],
                 borderTopRightRadius: "1rem",
                 borderTopLeftRadius: "1rem",
                 paddingTop: "1.5vh",
@@ -120,7 +157,9 @@ function MyProjects() {
               }}
               as="h5"
             >
-              <strong style={{marginLeft: "5rem"}}>{items.projectName}</strong>
+              <strong style={{ marginLeft: "5rem" }}>
+                {items.projectName}
+              </strong>
               <DropdownButton
                 id="dropdown-basic-button"
                 title=""
@@ -130,7 +169,14 @@ function MyProjects() {
               >
                 <Dropdown.Item href="#/action-1">Delete Project</Dropdown.Item>
                 <Dropdown.Item href="#/action-2">Edit Project</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Stop Project</Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    fetchUpdate(updateStatus);
+                  }}
+                  href="#/action-3"
+                >
+                  Stop Project
+                </Dropdown.Item>
               </DropdownButton>
             </Card.Header>
 
@@ -154,12 +200,11 @@ function MyProjects() {
                   data={{
                     datasets: [
                       {
-                        data: [2, tasksObj.length - 2],
-
+                        data: [done.length, tasksObj.length - done.length],
                         //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                         fill: true,
                         borderColor: "#EAEAEA",
-                        backgroundColor: ["#F9c262", "#EAEAEA"],
+                        backgroundColor: [colorMap[items.status], "#EAEAEA"],
                         tension: 0.1,
                       },
                     ],
@@ -199,7 +244,10 @@ function MyProjects() {
                     }}
                   />
 
-                  <p style={{ color: "#F9c262" }}> total of tasks</p>
+                  <p style={{ color: colorMap[items.status] }}>
+                    {" "}
+                    total of tasks
+                  </p>
                 </div>
                 <div
                   style={{
@@ -229,7 +277,9 @@ function MyProjects() {
                     }}
                   />
 
-                  <p style={{ color: "#F9c262" }}>project status</p>
+                  <p style={{ color: colorMap[items.status] }}>
+                    project status
+                  </p>
                 </div>
                 <div
                   style={{
@@ -239,7 +289,7 @@ function MyProjects() {
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
-                    {Math.round((2 / tasksObj.length) * 100)} %
+                    {Math.round((done.length / tasksObj.length) * 100)} %
                   </p>
 
                   <hr
@@ -253,7 +303,12 @@ function MyProjects() {
                     }}
                   />
 
-                  <p style={{ color: "#F9c262", marginBottom: "0" }}>
+                  <p
+                    style={{
+                      color: colorMap[items.status],
+                      marginBottom: "0rem",
+                    }}
+                  >
                     work progress
                   </p>
                 </div>
