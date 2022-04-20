@@ -8,6 +8,7 @@ import Graph from "./Graph";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton"
 import EditProject from "./EditProject";
+import MyTasks from "./MyTasks";
 
 function MyProjects() {
 
@@ -16,6 +17,7 @@ function MyProjects() {
   const [tasksObj, setTasksObj] = useState([]);
   const [charts, setCharts] = useState(null);
   const canvasRef = useRef();  
+  
 
   useEffect(() => {
     async function fetchData() {
@@ -41,7 +43,7 @@ function MyProjects() {
     fetchAmount();
     fetchData();
   }, []);
-
+ 
   useEffect(() => {
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
@@ -72,7 +74,12 @@ function MyProjects() {
     }
   }, [projectObj]);
 
+// console.log(tasksObj)
 
+
+// const tasks = tasksObj.status.includes("Done", 0)
+// // const doneTasks = tasks.push("Done")
+// console.log(tasks);
 
   return (
     <div
@@ -123,7 +130,11 @@ function MyProjects() {
             </Card.Header>
 
             <Card.Body
-              style={{ display: "flex", flexDirection: "row" }}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                paddingTop: "0rem",
+              }}
               onClick={() => navigate("/mytasks/")}
             >
               <div
@@ -138,7 +149,11 @@ function MyProjects() {
                   data={{
                     datasets: [
                       {
-                        data: [2, tasksObj.length - 2],
+                        data: [
+                          tasksObj.status.includes("Done").length,
+                          tasksObj.length - tasksObj.status.includes("Done").length,
+                        ],
+
                         //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                         fill: true,
                         borderColor: "#EAEAEA",
@@ -158,32 +173,9 @@ function MyProjects() {
                   fontWeight: "700",
                   fontSize: "0.7rem",
                   width: "6rem",
-                  marginTop: "2rem",
+                  marginTop: "4.5rem",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-end",
-                    flexDirection: "column",
-                  }}
-                >
-                  <p style={{ color: "#515151" }} className="mb-1">
-                    {items.contributors}
-                  </p>
-
-                  <hr
-                    style={{
-                      width: "4.3rem",
-                      margin: "0",
-                      border: " 2px dotted  black",
-                      borderStyle: "none none dotted",
-                      backgroundColor: "#fff",
-                    }}
-                  />
-
-                  <p style={{ color: "#F9c262" }}>contributors</p>
-                </div>
                 <div
                   style={{
                     display: "flex",
