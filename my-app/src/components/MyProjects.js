@@ -15,9 +15,6 @@ function MyProjects() {
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
   const [tasksObj, setTasksObj] = useState([]);
-  const [newObj, setNewObj] = useState({
-    status: "To start"
-  })
   const [selectedProject, setSelectedProject] = useState([]);
   const [charts, setCharts] = useState(null);
   const canvasRef = useRef();  
@@ -49,32 +46,29 @@ function MyProjects() {
   }, []);
 
    
-    async function fetchUpdate() {
+    async function updateProject(selectedProject, newProject) {
       try {
-        const updateTask = await axios.put(
+        await axios.put(
           `https://ironrest.herokuapp.com/cardinator/${selectedProject}`,
-          newObj
+          newProject
         );
-        refreshPage()
+      
+        refreshPage();
       } catch (err) {
         console.error(err);
       }
     }
-    fetchUpdate();
+    
 
  
   function refreshPage() {
     window.location.reload(false);
   }
-  const updateStatus = selectedProject.status
-  updateStatus.status = "inative";
-  // fetchUpdate(updateStatus);
 
   useEffect(() => {
     if (canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
       setCharts((grafico) => {
-        console.log(grafico);
         if (grafico) {
           grafico.destroy();
         }
@@ -99,9 +93,6 @@ function MyProjects() {
       });
     }
   }, [projectObj]);
-
-// console.log(tasksObj)
-// function background(projectObj) {}
 
  const status =  projectObj.map((items) => {
     return (items.status);
@@ -171,11 +162,27 @@ const completed = status.filter((prjStatus) => prjStatus === "completed");
                 <Dropdown.Item href="#/action-2">Edit Project</Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
-                    fetchUpdate(updateStatus);
+                    let projectClone = {...items};
+                    projectClone.status = "inative";
+                    delete projectClone._id
+
+                    updateProject(items._id, projectClone);
                   }}
                   href="#/action-3"
                 >
                   Stop Project
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    let projectClone = {...items};
+                    projectClone.status = "active";
+                    delete projectClone._id
+
+                    updateProject(items._id, projectClone);
+                  }}
+                  href="#/action-4"
+                >
+                  Restart Project
                 </Dropdown.Item>
               </DropdownButton>
             </Card.Header>
@@ -186,7 +193,7 @@ const completed = status.filter((prjStatus) => prjStatus === "completed");
                 flexDirection: "row",
                 paddingTop: "0rem",
               }}
-              onClick={() => navigate("/mytasks/")}
+              onClick={() => navigate(`/mytasks/${items._id}`)}
             >
               <div
                 style={{
