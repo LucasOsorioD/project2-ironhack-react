@@ -1,6 +1,5 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import Mytasks from "../components/Mytasks.css";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
@@ -13,11 +12,24 @@ function MyTasks() {
   const [taskList, setTaskList] = useState([]);
   const [taskObj, setTaskObj] = useState({
     name: "",
+    status: "Todo"
+  });
+  const [columns, setColumns] = useState({
+    todo: {
+      name: "Todo",
+      items: [],
+    },
+    doing: {
+      name: "Doing",
+      items: [],
+    },
+    done: {
+      name: "Done",
+      items: [],
+    },
   });
 
-  const [columns, setColumns] = useState({});
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   const handleShow = (id) => {
     setSelectedTask(id);
@@ -34,18 +46,22 @@ function MyTasks() {
         );
         // console.log(responseTask);
         setTaskList([...responseTask.data]);
+        const todo = responseTask.data.filter(task => task.status === "Todo");
+        const doing = responseTask.data.filter(task => task.status === "Doing");
+        const done = responseTask.data.filter(task => task.status === "Done");
+
         setColumns({
-          [uuidv4()]: {
+          todo: {
             name: "Todo",
-            items: [...responseTask.data],
+            items: [...todo],
           },
-          [uuidv4()]: {
+          doing: {
             name: "Doing",
-            items: [],
+            items: [...doing],
           },
-          [uuidv4()]: {
+          done: {
             name: "Done",
-            items: [],
+            items: [...done],
           },
         });
         setLoading(false);
@@ -102,6 +118,7 @@ function MyTasks() {
   function handleChange(event) {
     setTaskObj({ ...taskObj, [event.target.name]: event.target.value });
   }
+
   function refreshPage() {
     window.location.reload(false);
   }
@@ -109,6 +126,7 @@ function MyTasks() {
   function handleOnDragEnd(result, columns, setColumns) {
     if (!result.destination) return;
     const { source, destination } = result;
+
 
     // console.log("columns", columns)
     // console.log("source", source);
@@ -119,7 +137,11 @@ function MyTasks() {
       const sourceItems = [...sourceColumn.items]; //item de origem = ...colunadedestino. items
       const destItems = [...destColumn.items];
       const [reorderedItem] = sourceItems.splice(source.index, 1);
+      reorderedItem.status = destColumn.name;
       destItems.splice(destination.index, 0, reorderedItem);
+
+      
+      fetchUpdate(reorderedItem);
 
       setColumns({
         ...columns,
@@ -146,6 +168,22 @@ function MyTasks() {
       });
     }
   }
+  console.log("columns", columns)
+  
+  
+     async function fetchUpdate(task) {
+      const taskId = task._id;
+      delete task._id
+      console.log(task)
+       try {
+          await axios.put(
+           `https://ironrest.herokuapp.com/cardinatortasks/${taskId}`, task
+         );
+       } catch (err) {
+         console.error(err);
+       }
+     }
+  
 
   return (
     <>
@@ -211,28 +249,33 @@ function MyTasks() {
                                         key={currentTask._id}
                                       >
                                         {currentTask.name}
-                                        {column.name==="Todo"}
-                                        <div style={{ display: "inline-flex" }}>
+                                        {column.name === "Todo" && (
+                                          <div
+                                            style={{ display: "inline-flex" }}
+                                          >
                                           <Button
                                             variant="secondary"
                                             onClick={() =>
                                               handleShow(currentTask._id)
                                             }
                                           ></Button>
-                                          <input
-                                            onClick={() =>
-                                              setSelectedTask(currentTask._id)
-                                            }
-                                            className="form-check-input me-1"
-                                            type="checkbox"
-                                            value=""
-                                            aria-label="..."
-                                            style={{
-                                              position: "relative",
-                                              right: "7rem",
-                                            }}
-                                          />
-                                        </div>
+                                            <input
+                                              onClick={() =>
+                                                setSelectedTask(currentTask._id)
+                                              }
+                                              className="form-check-input me-1"
+                                              type="checkbox"
+                                              value=""
+                                              aria-label="..."
+                                              style={{
+                                                position: "absolute",
+                                                left: "1rem",
+                                                bottom: "0.7rem",
+                                                display: "flex",
+                                              }}
+                                            />
+                                          </div>
+                                        )}
                                       </li>
                                     </div>
                                   )}
@@ -292,6 +335,7 @@ function MyTasks() {
           />
         </div>
       )}
+      {/* <button ></button> */}
     </>
   );
 }
