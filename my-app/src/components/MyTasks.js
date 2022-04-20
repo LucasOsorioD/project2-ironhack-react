@@ -122,12 +122,12 @@ function MyTasks() {
   function refreshPage() {
     window.location.reload(false);
   }
-
+  
   function handleOnDragEnd(result, columns, setColumns) {
     if (!result.destination) return;
     const { source, destination } = result;
 
-
+    console.log(taskList)
     // console.log("columns", columns)
     // console.log("source", source);
 

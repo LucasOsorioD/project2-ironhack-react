@@ -80,6 +80,8 @@ function MyProjects() {
 // const tasks = tasksObj.status.includes("Done", 0)
 // // const doneTasks = tasks.push("Done")
 // console.log(tasks);
+ const keys = Object.keys(tasksObj)
+ console.log(keys);
 
   return (
     <div
@@ -102,7 +104,9 @@ function MyProjects() {
               marginRight: "1rem",
             }}
             key={items._id}
+
           >
+
             <Card.Header
               style={{
                 backgroundColor: "#F9C262",
@@ -116,12 +120,13 @@ function MyProjects() {
               }}
               as="h5"
             >
-              <strong>{items.projectName}</strong>
+              <strong style={{marginLeft: "5rem"}}>{items.projectName}</strong>
               <DropdownButton
                 id="dropdown-basic-button"
                 title=""
                 size="sm"
-                menuVariant="dark"
+                menuVariant="light"
+                variant="black"
               >
                 <Dropdown.Item href="#/action-1">Delete Project</Dropdown.Item>
                 <Dropdown.Item href="#/action-2">Edit Project</Dropdown.Item>
@@ -149,10 +154,7 @@ function MyProjects() {
                   data={{
                     datasets: [
                       {
-                        data: [
-                          2,
-                          tasksObj.length - 2,
-                        ],
+                        data: [2, tasksObj.length - 2],
 
                         //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                         fill: true,
