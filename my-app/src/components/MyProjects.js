@@ -59,7 +59,17 @@ function MyProjects() {
       }
     }
     
-
+    async function fetchDeletion(selectedProject) {
+      try {
+        await axios.delete(
+          `https://ironrest.herokuapp.com/cardinator/${selectedProject}`
+        );
+        refreshPage();
+      } catch (err) {
+        console.error(err);
+      }
+      fetchDeletion();
+    }
  
   function refreshPage() {
     window.location.reload(false);
@@ -94,17 +104,6 @@ function MyProjects() {
     }
   }, [projectObj]);
 
- const status =  projectObj.map((items) => {
-    return (items.status);
-  })
-
-const tostart = status.filter((prjStatus) => prjStatus === "To start");
-const active = status.filter((prjStatus) => prjStatus === "active");
-const completed = status.filter((prjStatus) => prjStatus === "completed");
-
- const todo = tasksObj.filter((task) => task.status === "Todo");
- const doing = tasksObj.filter((task) => task.status === "Doing");
- const done = tasksObj.filter((task) => task.status === "Done");
 
   const colorMap = {
     "To start": "#C4C4C4",
@@ -112,6 +111,7 @@ const completed = status.filter((prjStatus) => prjStatus === "completed");
     completed: "#5DD1B3",
     inative: "#FC599B",
   };
+  console.log(projectObj)
 
   return (
     <div
@@ -158,13 +158,20 @@ const completed = status.filter((prjStatus) => prjStatus === "completed");
                 menuVariant="light"
                 variant="black"
               >
-                <Dropdown.Item href="#/action-1">Delete Project</Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    fetchDeletion(items._id);
+                  }}
+                  href="#/action-1"
+                >
+                  Delete Project
+                </Dropdown.Item>
                 <Dropdown.Item href="#/action-2">Edit Project</Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
-                    let projectClone = {...items};
+                    let projectClone = { ...items };
                     projectClone.status = "inative";
-                    delete projectClone._id
+                    delete projectClone._id;
 
                     updateProject(items._id, projectClone);
                   }}
@@ -174,9 +181,9 @@ const completed = status.filter((prjStatus) => prjStatus === "completed");
                 </Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
-                    let projectClone = {...items};
+                    let projectClone = { ...items };
                     projectClone.status = "active";
-                    delete projectClone._id
+                    delete projectClone._id;
 
                     updateProject(items._id, projectClone);
                   }}
@@ -207,7 +214,21 @@ const completed = status.filter((prjStatus) => prjStatus === "completed");
                   data={{
                     datasets: [
                       {
-                        data: [done.length, tasksObj.length - done.length],
+                        data: [
+                          tasksObj.filter(
+                            (task) =>
+                              task.projectId === items._id &&
+                              task.status === "Done"
+                          ).length,
+                          tasksObj.filter(
+                            (task) => task.projectId === items._id
+                          ).length -
+                            tasksObj.filter(
+                              (task) =>
+                                task.projectId === items._id &&
+                                task.status === "Done"
+                            ).length,
+                        ],
                         //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                         fill: true,
                         borderColor: "#EAEAEA",
@@ -238,7 +259,10 @@ const completed = status.filter((prjStatus) => prjStatus === "completed");
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
-                    {tasksObj.length}
+                    {
+                      tasksObj.filter((task) => task.projectId === items._id)
+                        .length
+                    }
                   </p>
 
                   <hr
@@ -252,7 +276,6 @@ const completed = status.filter((prjStatus) => prjStatus === "completed");
                   />
 
                   <p style={{ color: colorMap[items.status] }}>
-                    {" "}
                     total of tasks
                   </p>
                 </div>
@@ -296,7 +319,16 @@ const completed = status.filter((prjStatus) => prjStatus === "completed");
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
-                    {Math.round((done.length / tasksObj.length) * 100)} %
+                    {Math.round(
+                      (tasksObj.filter(
+                        (task) =>
+                          task.projectId === items._id && task.status === "Done"
+                      ).length /
+                        tasksObj.filter((task) => task.projectId === items._id)
+                          .length) *
+                        100
+                    )}
+                    %
                   </p>
 
                   <hr
