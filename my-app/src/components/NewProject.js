@@ -1,8 +1,10 @@
 import Card from "react-bootstrap/Card";
 import { useState } from "react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+
 
 function NewProject() {
   const [newProj, setNewProj] = useState({
@@ -12,10 +14,8 @@ function NewProject() {
     totalAmountTasks: 0,
     completedTasks: 0,
   });
+   const navigate = useNavigate();
 
-  function refreshPage() {
-    window.location.reload(false);
-  }
   function handleSubmit() {
     async function fetchNewData() {
       try {
@@ -30,6 +30,14 @@ function NewProject() {
     }
     fetchNewData();
   }
+  function handleChange(event) {
+    setNewProj({ ...newProj, [event.target.name]: event.target.value });
+  }
+  function refreshPage() {
+    window.location.reload(false);
+  }
+
+
   return (
     <div>
       <Form
@@ -46,7 +54,9 @@ function NewProject() {
           </Form.Label>
           <Form.Control
             type="form"
-            name="{name}"
+            name="projectName"
+            value={newProj.projectName}
+            onChange={handleChange}
             style={{ marginTop: "0.5rem", width: "18rem" }}
           />
           <Form.Label style={{ marginTop: "1rem" }}>
@@ -60,7 +70,10 @@ function NewProject() {
         </Form.Group>
         <Button
           variant="primary"
-          onClick={handleSubmit}
+          onClick={() => {
+            handleSubmit();
+            navigate("/")
+          }}
           style={{ marginTop: "3rem" }}
         >
           Create New Project

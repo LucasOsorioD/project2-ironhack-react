@@ -6,8 +6,10 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import EditTasks from "./EditTasks.js";
 import Button from "react-bootstrap/Button";
+import { useParams } from "react-router-dom";
 
 function MyTasks() {
+  const { id } = useParams();
   const [selectedTask, setSelectedTask] = useState();
   const [taskList, setTaskList] = useState([]);
   const [taskObj, setTaskObj] = useState({
@@ -44,11 +46,10 @@ function MyTasks() {
         const responseTask = await axios.get(
           `https://ironrest.herokuapp.com/cardinatortasks/`
         );
-        // console.log(responseTask);
         setTaskList([...responseTask.data]);
-        const todo = responseTask.data.filter(task => task.status === "Todo");
-        const doing = responseTask.data.filter(task => task.status === "Doing");
-        const done = responseTask.data.filter(task => task.status === "Done");
+        const todo = responseTask.data.filter(task => task.status === "Todo" && task.projectId === id);
+        const doing = responseTask.data.filter(task => task.status === "Doing" && task.projectId === id);
+        const done = responseTask.data.filter(task => task.status === "Done" && task.projectId === id);
 
         setColumns({
           todo: {
@@ -116,20 +117,16 @@ function MyTasks() {
   }
 
   function handleChange(event) {
-    setTaskObj({ ...taskObj, [event.target.name]: event.target.value });
+    setTaskObj({ ...taskObj, projectId: id, [event.target.name]: event.target.value });
   }
 
   function refreshPage() {
     window.location.reload(false);
   }
-
+  
   function handleOnDragEnd(result, columns, setColumns) {
     if (!result.destination) return;
     const { source, destination } = result;
-
-
-    // console.log("columns", columns)
-    // console.log("source", source);
 
     if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId]; //coluna de origem
@@ -168,13 +165,11 @@ function MyTasks() {
       });
     }
   }
-  console.log("columns", columns)
-  
   
      async function fetchUpdate(task) {
       const taskId = task._id;
       delete task._id
-      console.log(task)
+    
        try {
           await axios.put(
            `https://ironrest.herokuapp.com/cardinatortasks/${taskId}`, task
@@ -184,7 +179,7 @@ function MyTasks() {
        }
      }
   
-
+     console.log(taskObj);
   return (
     <>
       {loading ? (
@@ -232,10 +227,10 @@ function MyTasks() {
                             style={{ listStyle: "none" }}
                           >
                             {column.items?.map((currentTask, index) => (
-                              <div key={currentTask._id}>
+                              <div key={currentTask._id} draggableId={currentTask._id}>
                                 <Draggable
                                   key={currentTask._id}
-                                  draggableId={currentTask._id}
+                                  draggableId={String(currentTask._id)}
                                   index={index}
                                 >
                                   {(droppableProvided, droppableSnapshot) => (
@@ -243,6 +238,10 @@ function MyTasks() {
                                       {...droppableProvided.draggableProps}
                                       {...droppableProvided.dragHandleProps}
                                       ref={droppableProvided.innerRef}
+                                      style={{
+                                        ...droppableProvided.draggableProps
+                                          .style,
+                                      }}
                                     >
                                       <li
                                         className="list-group-item mb-2"
@@ -253,12 +252,12 @@ function MyTasks() {
                                           <div
                                             style={{ display: "inline-flex" }}
                                           >
-                                          <Button
-                                            variant="secondary"
-                                            onClick={() =>
-                                              handleShow(currentTask._id)
-                                            }
-                                          ></Button>
+                                            <Button
+                                              variant="secondary"
+                                              onClick={() =>
+                                                handleShow(currentTask._id)
+                                              }
+                                            ></Button>
                                             <input
                                               onClick={() =>
                                                 setSelectedTask(currentTask._id)
