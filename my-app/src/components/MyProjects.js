@@ -6,7 +6,7 @@ import axios from "axios";
 import Graph from "./Graph";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import EditProject from "./EditProject";
+
 // import {
 //   taskFilteredByProject,
 //   tasksFilteredByStatus,
@@ -99,7 +99,6 @@ function MyProjects() {
         if (grafico) {
           grafico.destroy();
         }
-        // ^ o .destroy serve para remover o 'chart' antigo para dar espaço para o novo
         const myChart = new Chart(ctx, {
           type: "doughnut",
           options: { responsive: true, maintainAspectRatio: false },
@@ -116,7 +115,6 @@ function MyProjects() {
           },
         });
         return myChart;
-        //para criar um novo grafico chamo a const após destruir o state anterior, usando o return.
       });
     }
   }, [projectObj]);
@@ -127,7 +125,6 @@ function MyProjects() {
     completed: "#5DD1B3",
     inactive: "#FC599B",
   };
-  console.log(projectObj);
 
   // const handleShow = (id) => {
   //   setSelectedProject(id);
@@ -213,7 +210,6 @@ function MyProjects() {
                 >
                   Delete Project
                 </Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Edit Project</Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
                     let projectClone = { ...items };
@@ -272,7 +268,6 @@ function MyProjects() {
                               "Done"
                             ).length,
                         ],
-                        //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                         fill: true,
                         borderColor: "#EAEAEA",
                         backgroundColor: [colorMap[items.status], "#EAEAEA"],
@@ -280,7 +275,6 @@ function MyProjects() {
                       },
                     ],
                   }}
-                  //esse 'Graph' foi a forma que deu para fazer migrando o nosso canvas para um elemento a parte (ate fica mais organizado)
                 />
               </div>
               <div

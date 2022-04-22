@@ -1,24 +1,22 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
-import Mytasks from "../components/Mytasks.css";
+// import Mytasks from "../components/Mytasks.css";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import EditTasks from "./EditTasks.js";
 import Button from "react-bootstrap/Button";
 import { useParams } from "react-router-dom";
-// ^linha nova
+
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
   const [projectObj, setProjectObj] = useState();
-  //^linha nova
   const [taskList, setTaskList] = useState([]);
   const [taskObj, setTaskObj] = useState({
     name: "",
     status: "Todo",
   });
   const { id } = useParams();
-  //^linha nova
   const [columns, setColumns] = useState({
     todo: {
       name: "Todo",
@@ -84,14 +82,12 @@ function MyTasks() {
         const responseProje = await axios.get(
           `https://ironrest.herokuapp.com/cardinator/${id}`
         );
-        // console.log(responseTask);
         setProjectObj([...responseProje.data]);
       } catch (err) {
         console.error(err);
       }
     }
     fetchProject();
-    //^novo 79-90
     fetchTask();
   }, [id]);
 
@@ -154,9 +150,6 @@ function MyTasks() {
     if (!result.destination) return;
     const { source, destination } = result;
 
-    // console.log("columns", columns)
-    // console.log("source", source);
-
     if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId]; //coluna de origem
       const destColumn = columns[destination.droppableId]; //coluna de destino
@@ -167,7 +160,6 @@ function MyTasks() {
       destItems.splice(destination.index, 0, reorderedItem);
 
       fetchUpdate(reorderedItem);
-      // fetchUpdateProject(updatedProject);
 
       setColumns({
         ...columns,
@@ -250,7 +242,6 @@ function MyTasks() {
       projectObj
     );
     async function fetchUpdateProject(updatedProject) {
-      // const projId = updatedProject._id;
       delete updatedProject._id;
       console.log(updatedProject);
       try {
@@ -264,7 +255,6 @@ function MyTasks() {
     }
     fetchUpdateProject(updatedProject);
   }
-  //206-252 novo, processo das atualizações
 
   return (
     <>
@@ -396,14 +386,6 @@ function MyTasks() {
                             className="btn btn-secondary mt-2"
                           >
                             Add
-                          </button>
-                          <button
-                            className="btn btn-danger mt-2 "
-                            onClick={() => {
-                              fetchDeletion();
-                            }}
-                          >
-                            Delete
                           </button>
                           <button onClick={() => {handleProjectUpdate()}} className="btn btn-primary mt-2">
                             Save Changes
