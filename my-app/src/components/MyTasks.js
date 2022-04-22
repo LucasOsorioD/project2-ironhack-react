@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useState, useEffect } from "react";
-import Mytasks from "../components/Mytasks.css";
+// import Mytasks from "../components/Mytasks.css";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
@@ -205,7 +205,14 @@ function MyTasks() {
                   style={{ borderRadius: "0.5rem", width: "21rem" }}
                   key={columnId}
                 >
-                  <Card.Header className="card-header">
+                  <Card.Header
+                    style={{
+                      borderTopRightRadius: "0.5rem",
+                      borderTopLeftRadius: "0.5rem",
+                      paddingtop: "1.5vh",
+                      paddingBottom: "1.5vh",
+                    }}
+                  >
                     <h5 style={{ margin: "0" }}>{column.name}</h5>
                   </Card.Header>
                   <Card.Body style={{ backgroundColor: "#ededed" }}>
@@ -220,7 +227,6 @@ function MyTasks() {
                               ? "#d3d3d3"
                               : "#ededed",
                             width: "100%",
-                            // height: "50%",
                           }}
                           onScroll={(e) =>
                             console.log(
@@ -268,7 +274,6 @@ function MyTasks() {
                                           <div>
                                             <Button
                                               style={{
-                                                // heigth: "0.5rem",
                                                 position: "absolute",
                                                 left: "16rem",
                                                 bottom: "0.3rem",
@@ -352,7 +357,6 @@ function MyTasks() {
           />
         </div>
       )}
-      {/* <button ></button> */}
     </>
   );
 }

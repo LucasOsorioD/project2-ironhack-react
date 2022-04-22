@@ -1,5 +1,4 @@
 import Card from "react-bootstrap/Card";
-import Charts from "./Charts";
 import Chart from "chart.js/auto";
 import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,13 +6,12 @@ import axios from "axios";
 import Graph from "./Graph";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton"
-import EditProject from "./EditProject";
-import MyTasks from "./MyTasks";
 import active from "../imgs/active-1.svg";
 import completed from "../imgs/completedface-1.svg"
 import inactive from "../imgs/inative-1.svg"
-function MyProjects() {
 
+
+function MyProjects() {
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
   const [tasksObj, setTasksObj] = useState([]);
@@ -21,7 +19,6 @@ function MyProjects() {
   const [charts, setCharts] = useState(null);
   const canvasRef = useRef();  
   
-
   useEffect(() => {
     async function fetchData() {
       try {
@@ -84,7 +81,6 @@ function MyProjects() {
         if (grafico) {
           grafico.destroy();
         }
-        // ^ o .destroy serve para remover o 'chart' antigo para dar espaço para o novo
         const myChart = new Chart(ctx, {
           type: "doughnut",
           options: { responsive: true, maintainAspectRatio: false },
@@ -101,7 +97,6 @@ function MyProjects() {
           },
         });
         return myChart;
-        //para criar um novo grafico chamo a const após destruir o state anterior, usando o return.
       });
     }
   }, [projectObj]);
@@ -125,39 +120,6 @@ function MyProjects() {
         justifyContent: "space-around",
       }}
     >
-      {/* <DropdownButton
-        id="dropdown-basic-button"
-        title=""
-        size="sm"
-        menuVariant="light"
-        variant="black"
-      >
-        <Dropdown.Item
-          onClick={() => {
-          }}
-          href="#/action-1"
-        >
-          Active 
-        </Dropdown.Item>
-        <Dropdown.Item href="#/action-2">Completed </Dropdown.Item>
-        <Dropdown.Item
-          onClick={() => {
-            projectObj.filter((prj) => prj.status === "inative" )
-          }}
-          href="#/action-3"
-        >
-          Inative
-        </Dropdown.Item>
-       
-          <Dropdown.Item
-
-            onClick={() => {
-            }}
-            href="#/action-4"
-          >
-            To start 
-          </Dropdown.Item>
-      </DropdownButton> */}
       {projectObj.map((items) => {
         return (
           <Card
@@ -180,6 +142,7 @@ function MyProjects() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                textAlign: "center",
               }}
               as="h5"
             >
@@ -201,7 +164,6 @@ function MyProjects() {
                 >
                   Delete Project
                 </Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Edit Project</Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
                     let projectClone = { ...items };
@@ -214,36 +176,20 @@ function MyProjects() {
                 >
                   Stop Project
                 </Dropdown.Item>
-                {items.status === "active" && (
-                  <Dropdown.Item
-                    onClick={() => {
-                      let projectClone = { ...items };
-                      projectClone.status = "completed";
-                      delete projectClone._id;
+                {items.status === "inactive" && (
 
-                      updateProject(items._id, projectClone);
-                    }}
-                    href="#/action-4"
-                  >
-                    Complete Project
-                  </Dropdown.Item>
-                )}
+                <Dropdown.Item
+                  onClick={() => {
+                    let projectClone = { ...items };
+                    projectClone.status = "active";
+                    delete projectClone._id;
 
-                {(items.status === "inactive") |
-                  (items.status === "completed") |
-                  (items.status === "To start") && (
-                  <Dropdown.Item
-                    onClick={() => {
-                      let projectClone = { ...items };
-                      projectClone.status = "active";
-                      delete projectClone._id;
-
-                      updateProject(items._id, projectClone);
-                    }}
-                    href="#/action-5"
-                  >
-                    Active project
-                  </Dropdown.Item>
+                    updateProject(items._id, projectClone);
+                  }}
+                  href="#/action-4"
+                >
+                  Restart Project
+                </Dropdown.Item>
                 )}
               </DropdownButton>
             </Card.Header>
@@ -275,7 +221,16 @@ function MyProjects() {
                   />
                 )}
                 {items.status === "inactive" && (
-                <img src={inactive} alt="active " style={{ width: "50px", marginLeft: "1.2rem", position: "relative", top:"0.5rem" }} />
+                  <img
+                    src={inactive}
+                    alt="active "
+                    style={{
+                      width: "50px",
+                      marginLeft: "1.2rem",
+                      position: "relative",
+                      top: "0.5rem",
+                    }}
+                  />
                 )}
               </div>
               <div></div>
@@ -306,7 +261,6 @@ function MyProjects() {
                                 task.status === "Done"
                             ).length,
                         ],
-                        //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                         fill: true,
                         borderColor: "#EAEAEA",
                         backgroundColor: [colorMap[items.status], "#EAEAEA"],
@@ -314,7 +268,6 @@ function MyProjects() {
                       },
                     ],
                   }}
-                  //esse 'Graph' foi a forma que deu para fazer migrando o nosso canvas para um elemento a parte (ate fica mais organizado)
                 />
               </div>
               <div
@@ -396,7 +349,6 @@ function MyProjects() {
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
-
                     {Math.round(
                       (tasksObj.filter(
                         (task) =>
@@ -405,7 +357,8 @@ function MyProjects() {
                         tasksObj.filter((task) => task.projectId === items._id)
                           .length) *
                         100
-                    )} %
+                    )}{" "}
+                    %
                   </p>
 
                   <hr
@@ -433,6 +386,8 @@ function MyProjects() {
           </Card>
         );
       })}
+      <div>
+      </div>
     </div>
   );
 }
