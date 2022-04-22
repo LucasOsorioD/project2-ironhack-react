@@ -201,22 +201,26 @@ function MyTasks() {
           >
             {Object.entries(columns).map(([columnId, column]) => {
               return (
-                <Card style={{ borderRadius: "0.5rem", width: "21rem" }}>
+                <Card
+                  style={{ borderRadius: "0.5rem", width: "21rem" }}
+                  key={columnId}
+                >
                   <Card.Header className="card-header">
                     <h5 style={{ margin: "0" }}>{column.name}</h5>
                   </Card.Header>
-                  <Card.Body>
+                  <Card.Body style={{ backgroundColor: "#ededed" }}>
                     <Droppable droppableId={columnId} key={columnId}>
                       {(droppableProvided, droppableSnapshot) => (
                         <div
                           {...droppableProvided.droppableProps}
                           ref={droppableProvided.innerRef}
+                          key={columnId}
                           style={{
                             background: droppableSnapshot.isDraggingOver
-                              ? "lightblue"
+                              ? "#d3d3d3"
                               : "#ededed",
                             width: "100%",
-                            // height: "85%",
+                            // height: "50%",
                           }}
                           onScroll={(e) =>
                             console.log(
@@ -228,11 +232,12 @@ function MyTasks() {
                           <ul
                             className="list-group "
                             style={{ listStyle: "none" }}
+                            key={columnId}
                           >
                             {column.items?.map((currentTask, index) => (
                               <div
                                 key={currentTask._id}
-                                draggableId={currentTask._id}
+                                draggableid={currentTask._id}
                               >
                                 <Draggable
                                   key={currentTask._id}
@@ -258,52 +263,44 @@ function MyTasks() {
                                         }}
                                       >
                                         {currentTask.name}
-                                        {column.name === "Todo" && (
-                                          <div
-                                            style={{ display: "inline-flex" }}
-                                          >
-                                            {/* <Button */}
-                                            {/* variant="outline-secondary" onClick=
-                                            {() => handleShow(currentTask._id)} */}
-                                            {/* > */}
-                                            <div>
-                                              <Button
-                                                style={{
-                                                  // heigth: "0.5rem",
-                                                  position: "absolute",
-                                                  left: "16rem",
-                                                  bottom: "0.3rem",
-                                                }}
-                                                variant="outline-secondary"
-                                                size="sm"
-                                                border="none"
-                                              >
-                                                <VscEdit
-                                                  onClick={() =>
-                                                    handleShow(currentTask._id)
-                                                  }
-                                                  // style={{
-                                                  //   heigth: "1.5rem",
-                                                  //   position: "absolute",
-                                                  //   left: "17rem",
-                                                  //   bottom: "0.5rem",
-                                                  // }}
-                                                />
-                                              </Button>
-                                              <BsTrash
-                                                style={{
-                                                  position: "absolute",
-                                                  left: "15rem",
-                                                  bottom: "0.5rem",
-                                                }}
-                                                onClick={() =>
-                                                  fetchDeletion(currentTask._id)
-                                                }
-                                              />
-                                            </div>
-                                            {/* </Button> */}
+
+                                        <div style={{ display: "inline-flex" }}>
+                                          <div>
+                                            <Button
+                                              style={{
+                                                // heigth: "0.5rem",
+                                                position: "absolute",
+                                                left: "16rem",
+                                                bottom: "0.3rem",
+                                                border: "none",
+                                              }}
+                                              variant="outline-secondary"
+                                              size="sm"
+                                              border="none"
+                                              onClick={() =>
+                                                handleShow(currentTask._id)
+                                              }
+                                            >
+                                              <VscEdit />
+                                            </Button>
+                                            <Button
+                                              style={{
+                                                position: "absolute",
+                                                left: "14rem",
+                                                bottom: "0.3rem",
+                                                border: "none",
+                                              }}
+                                              variant="outline-secondary"
+                                              size="sm"
+                                              border="none"
+                                              onClick={() =>
+                                                fetchDeletion(currentTask._id)
+                                              }
+                                            >
+                                              <BsTrash />
+                                            </Button>
                                           </div>
-                                        )}
+                                        </div>
                                       </li>
                                     </div>
                                   )}
@@ -321,7 +318,7 @@ function MyTasks() {
                           onChange={handleChange}
                           value={taskObj.name}
                           name="name"
-                          style={{ marginTop: "0.5rem", width: "18rem" }}
+                          style={{ marginTop: "1rem", width: "18rem" }}
                           type="form"
                         />
                         <div>
