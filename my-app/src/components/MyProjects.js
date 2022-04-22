@@ -6,16 +6,37 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Graph from "./Graph";
 import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton"
+import DropdownButton from "react-bootstrap/DropdownButton";
 import EditProject from "./EditProject";
+// import {
+//   taskFilteredByProject,
+//   tasksFilteredByStatus,
+//   calculandoWorkProgress,
+// } from "./testandoReactComFlah";
+function taskFilteredByProject(taskList, projectId) {
+  return taskList.filter((task) => task.projectId === projectId);
+}
 
+function tasksFilteredByStatus(taskList, status) {
+  return taskList.filter((task) => task.status === status);
+}
+
+function calculandoWorkProgress(
+  listaFiltradaPorProjeto,
+  tarefasFiltradasPorStatusDone
+) {
+  return `${Math.round(
+    (tarefasFiltradasPorStatusDone.length / listaFiltradaPorProjeto.length) *
+      100
+  )}  %`;
+}
+//11-33 funcoes que fazer o processo de atualizar as tasks e o %
 function MyProjects() {
-
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
   const [tasksObj, setTasksObj] = useState([]);
   const [charts, setCharts] = useState(null);
-  const canvasRef = useRef();  
+  const canvasRef = useRef();
 
   useEffect(() => {
     async function fetchData() {
@@ -71,8 +92,6 @@ function MyProjects() {
       });
     }
   }, [projectObj]);
-
-
 
   return (
     <div
@@ -138,7 +157,17 @@ function MyProjects() {
                   data={{
                     datasets: [
                       {
-                        data: [2, tasksObj.length - 2],
+                        data: [
+                          tasksFilteredByStatus(
+                            taskFilteredByProject(tasksObj, items._id),
+                            "Done"
+                          ).length,
+                          taskFilteredByProject(tasksObj, items._id).length -
+                            tasksFilteredByStatus(
+                              taskFilteredByProject(tasksObj, items._id),
+                              "Done"
+                            ).length,
+                        ],
                         //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                         fill: true,
                         borderColor: "#EAEAEA",

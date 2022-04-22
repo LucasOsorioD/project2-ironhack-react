@@ -1,0 +1,18 @@
+export function taskFilteredByProject(taskList, projectId) {
+  return taskList.filter((task) => task.projectId === projectId);
+}
+
+export function tasksFilteredByStatus(taskList, status) {
+  return taskList.filter((task) => task.status === status);
+}
+
+export function calculandoWorkProgress(
+  listaFiltradaPorProjeto,
+  tarefasFiltradasPorStatusDone
+) {
+  return `${Math.round(
+    (tarefasFiltradasPorStatusDone.length / listaFiltradaPorProjeto.length) *
+      100
+  )}  %`;
+}
+//as funções que auxiliariam no processo de pegar as tasks e %completion, porem usamos direto dentro da funcao

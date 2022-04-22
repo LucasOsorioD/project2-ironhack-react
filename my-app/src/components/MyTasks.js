@@ -6,14 +6,19 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import EditTasks from "./EditTasks.js";
 import Button from "react-bootstrap/Button";
-
+import { useParams } from "react-router-dom";
+// ^linha nova
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
+  const [projectObj, setProjectObj] = useState();
+  //^linha nova
   const [taskList, setTaskList] = useState([]);
   const [taskObj, setTaskObj] = useState({
     name: "",
-    status: "Todo"
+    status: "Todo",
   });
+  const { id } = useParams();
+  //^linha nova
   const [columns, setColumns] = useState({
     todo: {
       name: "Todo",
@@ -46,9 +51,11 @@ function MyTasks() {
         );
         // console.log(responseTask);
         setTaskList([...responseTask.data]);
-        const todo = responseTask.data.filter(task => task.status === "Todo");
-        const doing = responseTask.data.filter(task => task.status === "Doing");
-        const done = responseTask.data.filter(task => task.status === "Done");
+        const todo = responseTask.data.filter((task) => task.status === "Todo");
+        const doing = responseTask.data.filter(
+          (task) => task.status === "Doing"
+        );
+        const done = responseTask.data.filter((task) => task.status === "Done");
 
         setColumns({
           todo: {
@@ -69,8 +76,21 @@ function MyTasks() {
         console.error(err);
       }
     }
+    async function fetchProject() {
+      try {
+        const responseProje = await axios.get(
+          `https://ironrest.herokuapp.com/cardinator/${id}`
+        );
+        // console.log(responseTask);
+        setProjectObj([...responseProje.data]);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchProject();
+    //^novo 79-90
     fetchTask();
-  }, []);
+  }, [id]);
 
   async function fetchDeletion() {
     try {
@@ -127,7 +147,6 @@ function MyTasks() {
     if (!result.destination) return;
     const { source, destination } = result;
 
-
     // console.log("columns", columns)
     // console.log("source", source);
 
@@ -140,8 +159,8 @@ function MyTasks() {
       reorderedItem.status = destColumn.name;
       destItems.splice(destination.index, 0, reorderedItem);
 
-      
       fetchUpdate(reorderedItem);
+      // fetchUpdateProject(updatedProject);
 
       setColumns({
         ...columns,
@@ -168,25 +187,76 @@ function MyTasks() {
       });
     }
   }
-  console.log("columns", columns)
-  
-  
-     async function fetchUpdate(task) {
-      const taskId = task._id;
-      delete task._id
-      console.log(task)
-       try {
-          await axios.put(
-           `https://ironrest.herokuapp.com/cardinatortasks/${taskId}`, task
-         );
-       } catch (err) {
-         console.error(err);
-       }
-     }
-  
+  console.log("columns", columns);
+
+  async function fetchUpdate(task) {
+    const taskId = task._id;
+    delete task._id;
+    console.log(task);
+    try {
+      await axios.put(
+        `https://ironrest.herokuapp.com/cardinatortasks/${taskId}`,
+        task
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function calculandoWorkProgress(
+    listaFiltradaPorProjeto,
+    tarefasFiltradasPorStatusDone
+  ) {
+    return `${Math.round(
+      (tarefasFiltradasPorStatusDone.length / listaFiltradaPorProjeto.length) *
+        100
+    )} %`;
+  }
+  const workProgress = calculandoWorkProgress(taskList, columns.done.items);
+
+  function getUpdatedProject(
+    workProgress,
+    tarefasFiltradasPorStatusDone,
+    projectObj
+  ) {
+    const clone = { ...projectObj };
+    clone.workProgress = workProgress;
+    clone.completedTasks = tarefasFiltradasPorStatusDone.length;
+    if (workProgress === "100 %"){
+      clone.status = "completed"
+    }
+    return clone;
+  }
+
+  function handleProjectUpdate() {
+    const updatedProject = getUpdatedProject(
+      workProgress,
+      columns.done.items,
+      projectObj
+    );
+    async function fetchUpdateProject(updatedProject) {
+      const projId = updatedProject._id;
+      delete updatedProject._id;
+      console.log(updatedProject);
+      try {
+        await axios.put(
+          `https://ironrest.herokuapp.com/cardinator/${projId}`,
+          updatedProject
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchUpdateProject(updatedProject);
+  }
+  //206-252 novo, processo das atualizações 
 
   return (
     <>
+      <button onClick={handleProjectUpdate} style={{ color: "red" }}>
+        Atualizar o status do Projeto
+      </button>
+      {/* 256-259 botao para atualizar a API com as infos do kanban */}
       {loading ? (
         <h1 style={{ marginTop: "10rem" }}>loading...</h1>
       ) : (
@@ -253,12 +323,12 @@ function MyTasks() {
                                           <div
                                             style={{ display: "inline-flex" }}
                                           >
-                                          <Button
-                                            variant="secondary"
-                                            onClick={() =>
-                                              handleShow(currentTask._id)
-                                            }
-                                          ></Button>
+                                            <Button
+                                              variant="secondary"
+                                              onClick={() =>
+                                                handleShow(currentTask._id)
+                                              }
+                                            ></Button>
                                             <input
                                               onClick={() =>
                                                 setSelectedTask(currentTask._id)
@@ -335,7 +405,6 @@ function MyTasks() {
           />
         </div>
       )}
-      {/* <button ></button> */}
     </>
   );
 }
