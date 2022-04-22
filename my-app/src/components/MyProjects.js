@@ -8,7 +8,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import active from "../imgs/active-1.svg";
 import completed from "../imgs/completedface-1.svg";
-import inactive from "../imgs/inative-1.svg";
+import inactive from "../imgs/inative-1 copy 2.svg";
 
 function taskFilteredByProject(taskList, projectId) {
   return taskList.filter((task) => task.projectId === projectId);
