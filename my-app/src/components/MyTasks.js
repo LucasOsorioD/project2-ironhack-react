@@ -219,7 +219,13 @@ function MyTasks() {
         100
     )} %`;
   }
-  const workProgress = calculandoWorkProgress(taskList, columns.done.items);
+  let filteredTasksByProject = taskList.filter(currentElement => currentElement.projectId === id)
+  
+  const workProgress = calculandoWorkProgress(filteredTasksByProject, columns.done.items);
+
+  console.log(taskList);
+  console.log(id);
+  console.log(filteredTasksByProject)
 
   function getUpdatedProject(
     workProgress,
@@ -231,6 +237,8 @@ function MyTasks() {
     clone.completedTasks = tarefasFiltradasPorStatusDone.length;
     if (workProgress === "100 %") {
       clone.status = "completed";
+    } else if (workProgress !== "100 %") {
+      clone.status = "active";
     }
     return clone;
   }
@@ -242,12 +250,12 @@ function MyTasks() {
       projectObj
     );
     async function fetchUpdateProject(updatedProject) {
-      const projId = updatedProject._id;
+      // const projId = updatedProject._id;
       delete updatedProject._id;
       console.log(updatedProject);
       try {
         await axios.put(
-          `https://ironrest.herokuapp.com/cardinator/${projId}`,
+          `https://ironrest.herokuapp.com/cardinator/${id}`,
           updatedProject
         );
       } catch (err) {
@@ -398,7 +406,7 @@ function MyTasks() {
                             Delete
                           </button>
                           <button onClick={() => {handleProjectUpdate()}} className="btn btn-primary mt-2">
-                            Update Project
+                            Save Changes
                           </button>
                         </div>
                       </div>

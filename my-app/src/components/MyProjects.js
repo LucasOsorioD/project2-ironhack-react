@@ -1,14 +1,12 @@
 import Card from "react-bootstrap/Card";
-import Charts from "./Charts";
 import Chart from "chart.js/auto";
 import { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Graph from "./Graph";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import EditProject from "./EditProject";
-import MyTasks from "./MyTasks";
 // import {
 //   taskFilteredByProject,
 //   tasksFilteredByStatus,
@@ -127,9 +125,40 @@ function MyProjects() {
     "To start": "#C4C4C4",
     active: "#F9c262",
     completed: "#5DD1B3",
-    inative: "#FC599B",
+    inactive: "#FC599B",
   };
   console.log(projectObj);
+
+  // const handleShow = (id) => {
+  //   setSelectedProject(id);
+  //   setShowModal(true);
+  // };
+  // const [showModal, setShowModal] = useState(false);
+  // const handleClose = () => setShowModal(false);
+
+  // function handleUpdate() {
+  //   async function fetchUpdate() {
+  //     try {
+  //       const updateProj = await axios.put(
+  //         `https://ironrest.herokuapp.com/cardinator/${selectedProject}`,
+  //         projectObj
+  //       );
+  //       refreshPage();
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   }
+  //   fetchUpdate();
+  //   handleClose();
+  // }
+
+  // function handleChange(event) {
+  //   setProjectObj({
+  //     ...projectObj,
+  //     // projectId: id,
+  //     [event.target.name]: event.target.value,
+  //   });
+  // }
 
   return (
     <div
@@ -188,7 +217,7 @@ function MyProjects() {
                 <Dropdown.Item
                   onClick={() => {
                     let projectClone = { ...items };
-                    projectClone.status = "inative";
+                    projectClone.status = "inactive";
                     delete projectClone._id;
 
                     updateProject(items._id, projectClone);
@@ -370,6 +399,14 @@ function MyProjects() {
           </Card>
         );
       })}
+      {/* <EditProject
+            show={showModal}
+            handleClose={handleClose}
+            handleUpdate={handleUpdate}
+            handleChange={handleChange}
+            value={projectObj.name}
+            name={"name"}
+          /> */}
     </div>
   );
 }

@@ -6,7 +6,7 @@ import NavBar from "./NavBar";
 import MyProjects from "./MyProjects";
 import MyTasks from "./MyTasks";
 import NewProject from "./NewProject";
-import Chart from "./Charts";
+import Charts from "./Charts";
 import NotFound from "./NotFound";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MyProjects />} />
         <Route path="/newproject" element={<NewProject />} />
-        <Route path="/chart" element={<Chart />} />
+        <Route path="/chart" element={<Charts />} />
         <Route path="/mytasks/:id" element={<MyTasks />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

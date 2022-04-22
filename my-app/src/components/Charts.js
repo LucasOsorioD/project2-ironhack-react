@@ -38,7 +38,7 @@ function Charts() {
                 data: [0, 1],
                 fill: true,
                 borderColor: "#EAEAEA",
-                backgroundColor: ["#F9c262", "#EAEAEA"],
+                backgroundColor: "#EAEAEA",
                 tension: 0.1,
               },
             ],
@@ -54,13 +54,13 @@ function Charts() {
     "To start": "#C4C4C4",
     active: "#F9c262",
     completed: "#5DD1B3",
-    inative: "#FC599B",
+    inactive: "#FC599B",
   };
 
   return (
     <div>
       <h1> CHARTS</h1>
-      {projectObj.map((item) => {
+      {projectObj.map(() => {
         return (
           <div>
             <Graph
@@ -68,14 +68,13 @@ function Charts() {
                 datasets: [
                   {
                     data: [
-                      projectObj.length,
-                      projectObj.length - (item.status === "To start").length,
-                      (item.status === "inative").length,
+                      2,
+                      3
                     ],
                     //esse é o valor que efetivamente está sendo refletido no grafico do projeto na home
                     fill: true,
                     borderColor: "#EAEAEA",
-                    backgroundColor: [colorMap[item.status], "#EAEAEA"],
+                    backgroundColor:"#EAEAEA",
                     tension: 0.1,
                   },
                 ],
