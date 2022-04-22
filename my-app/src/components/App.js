@@ -17,7 +17,7 @@ function App() {
         <Route path="/" element={<MyProjects />} />
         <Route path="/newproject" element={<NewProject />} />
         <Route path="/chart" element={<Chart />} />
-        <Route path="/mytasks" element={<MyTasks />} />
+        <Route path="/mytasks/:id" element={<MyTasks />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

@@ -49,13 +49,16 @@ function MyTasks() {
         const responseTask = await axios.get(
           `https://ironrest.herokuapp.com/cardinatortasks/`
         );
-        // console.log(responseTask);
         setTaskList([...responseTask.data]);
-        const todo = responseTask.data.filter((task) => task.status === "Todo");
-        const doing = responseTask.data.filter(
-          (task) => task.status === "Doing"
+        const todo = responseTask.data.filter(
+          (task) => task.status === "Todo" && task.projectId === id
         );
-        const done = responseTask.data.filter((task) => task.status === "Done");
+        const doing = responseTask.data.filter(
+          (task) => task.status === "Doing" && task.projectId === id
+        );
+        const done = responseTask.data.filter(
+          (task) => task.status === "Done" && task.projectId === id
+        );
 
         setColumns({
           todo: {
@@ -136,7 +139,11 @@ function MyTasks() {
   }
 
   function handleChange(event) {
-    setTaskObj({ ...taskObj, [event.target.name]: event.target.value });
+    setTaskObj({
+      ...taskObj,
+      projectId: id,
+      [event.target.name]: event.target.value,
+    });
   }
 
   function refreshPage() {
@@ -222,8 +229,8 @@ function MyTasks() {
     const clone = { ...projectObj };
     clone.workProgress = workProgress;
     clone.completedTasks = tarefasFiltradasPorStatusDone.length;
-    if (workProgress === "100 %"){
-      clone.status = "completed"
+    if (workProgress === "100 %") {
+      clone.status = "completed";
     }
     return clone;
   }
@@ -249,14 +256,10 @@ function MyTasks() {
     }
     fetchUpdateProject(updatedProject);
   }
-  //206-252 novo, processo das atualizações 
+  //206-252 novo, processo das atualizações
 
   return (
     <>
-      <button onClick={handleProjectUpdate} style={{ color: "red" }}>
-        Atualizar o status do Projeto
-      </button>
-      {/* 256-259 botao para atualizar a API com as infos do kanban */}
       {loading ? (
         <h1 style={{ marginTop: "10rem" }}>loading...</h1>
       ) : (
@@ -302,10 +305,13 @@ function MyTasks() {
                             style={{ listStyle: "none" }}
                           >
                             {column.items?.map((currentTask, index) => (
-                              <div key={currentTask._id}>
+                              <div
+                                key={currentTask._id}
+                                draggableId={currentTask._id}
+                              >
                                 <Draggable
                                   key={currentTask._id}
-                                  draggableId={currentTask._id}
+                                  draggableId={String(currentTask._id)}
                                   index={index}
                                 >
                                   {(droppableProvided, droppableSnapshot) => (
@@ -313,6 +319,10 @@ function MyTasks() {
                                       {...droppableProvided.draggableProps}
                                       {...droppableProvided.dragHandleProps}
                                       ref={droppableProvided.innerRef}
+                                      style={{
+                                        ...droppableProvided.draggableProps
+                                          .style,
+                                      }}
                                     >
                                       <li
                                         className="list-group-item mb-2"
@@ -386,6 +396,9 @@ function MyTasks() {
                             }}
                           >
                             Delete
+                          </button>
+                          <button onClick={() => {handleProjectUpdate()}} className="btn btn-primary mt-2">
+                            Update Project
                           </button>
                         </div>
                       </div>
