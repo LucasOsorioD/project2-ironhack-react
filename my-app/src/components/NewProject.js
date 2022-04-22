@@ -6,7 +6,6 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import CardHeader from "react-bootstrap/esm/CardHeader";
 
-
 function NewProject() {
   const [newProj, setNewProj] = useState({
     projectName: "",
@@ -15,7 +14,7 @@ function NewProject() {
     totalAmountTasks: 0,
     completedTasks: 0,
   });
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   function handleSubmit() {
     async function fetchNewData() {
@@ -37,7 +36,6 @@ function NewProject() {
   function refreshPage() {
     window.location.reload(false);
   }
-
 
   return (
     <div>

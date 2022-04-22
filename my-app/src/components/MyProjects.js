@@ -1,15 +1,32 @@
 import Card from "react-bootstrap/Card";
 import Chart from "chart.js/auto";
 import { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Graph from "./Graph";
 import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton"
+import DropdownButton from "react-bootstrap/DropdownButton";
 import active from "../imgs/active-1.svg";
-import completed from "../imgs/completedface-1.svg"
-import inactive from "../imgs/inative-1.svg"
+import completed from "../imgs/completedface-1.svg";
+import inactive from "../imgs/inative-1.svg";
 
+function taskFilteredByProject(taskList, projectId) {
+  return taskList.filter((task) => task.projectId === projectId);
+}
+
+function tasksFilteredByStatus(taskList, status) {
+  return taskList.filter((task) => task.status === status);
+}
+
+function calculandoWorkProgress(
+  listaFiltradaPorProjeto,
+  tarefasFiltradasPorStatusDone
+) {
+  return `${Math.round(
+    (tarefasFiltradasPorStatusDone.length / listaFiltradaPorProjeto.length) *
+      100
+  )}  %`;
+}
 
 function MyProjects() {
   const navigate = useNavigate();
@@ -17,8 +34,8 @@ function MyProjects() {
   const [tasksObj, setTasksObj] = useState([]);
   const [selectedProject, setSelectedProject] = useState([]);
   const [charts, setCharts] = useState(null);
-  const canvasRef = useRef();  
-  
+  const canvasRef = useRef();
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -44,32 +61,31 @@ function MyProjects() {
     fetchData();
   }, []);
 
-   
-    async function updateProject(selectedProject, newProject) {
-      try {
-        await axios.put(
-          `https://ironrest.herokuapp.com/cardinator/${selectedProject}`,
-          newProject
-        );
-      
-        refreshPage();
-      } catch (err) {
-        console.error(err);
-      }
+  async function updateProject(selectedProject, newProject) {
+    try {
+      await axios.put(
+        `https://ironrest.herokuapp.com/cardinator/${selectedProject}`,
+        newProject
+      );
+
+      refreshPage();
+    } catch (err) {
+      console.error(err);
     }
-    
-    async function fetchDeletion(selectedProject) {
-      try {
-        await axios.delete(
-          `https://ironrest.herokuapp.com/cardinator/${selectedProject}`
-        );
-        refreshPage();
-      } catch (err) {
-        console.error(err);
-      }
-      fetchDeletion();
+  }
+
+  async function fetchDeletion(selectedProject) {
+    try {
+      await axios.delete(
+        `https://ironrest.herokuapp.com/cardinator/${selectedProject}`
+      );
+      refreshPage();
+    } catch (err) {
+      console.error(err);
     }
- 
+    fetchDeletion();
+  }
+
   function refreshPage() {
     window.location.reload(false);
   }
@@ -101,14 +117,12 @@ function MyProjects() {
     }
   }, [projectObj]);
 
-
   const colorMap = {
     "To start": "#C4C4C4",
     active: "#F9c262",
     completed: "#5DD1B3",
     inactive: "#FC599B",
   };
-
 
   return (
     <div
@@ -247,18 +261,14 @@ function MyProjects() {
                     datasets: [
                       {
                         data: [
-                          tasksObj.filter(
-                            (task) =>
-                              task.projectId === items._id &&
-                              task.status === "Done"
+                          tasksFilteredByStatus(
+                            taskFilteredByProject(tasksObj, items._id),
+                            "Done"
                           ).length,
-                          tasksObj.filter(
-                            (task) => task.projectId === items._id
-                          ).length -
-                            tasksObj.filter(
-                              (task) =>
-                                task.projectId === items._id &&
-                                task.status === "Done"
+                          taskFilteredByProject(tasksObj, items._id).length -
+                            tasksFilteredByStatus(
+                              taskFilteredByProject(tasksObj, items._id),
+                              "Done"
                             ).length,
                         ],
                         fill: true,
@@ -386,8 +396,6 @@ function MyProjects() {
           </Card>
         );
       })}
-      <div>
-      </div>
     </div>
   );
 }
