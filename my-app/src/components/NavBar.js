@@ -47,13 +47,6 @@ const NavBar = () => {
           >
             <strong>create</strong>
           </div>
-          <div
-            className="icon"
-            onClick={() => navigate("/chart")}
-            style={{ marginLeft: "3vh" }}
-          >
-            <strong>charts</strong>
-          </div>
         </div>
         <div style={{ display: "flex", fontSize: "2.5vh", marginLeft: "95vh" }}>
           <strong>Hello, Nat </strong>

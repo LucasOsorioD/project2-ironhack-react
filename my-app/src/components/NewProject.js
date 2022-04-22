@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import CardHeader from "react-bootstrap/esm/CardHeader";
 
 function NewProject() {
   const [newProj, setNewProj] = useState({
@@ -18,7 +19,7 @@ function NewProject() {
   function handleSubmit() {
     async function fetchNewData() {
       try {
-        const addNewProj = await axios.post(
+         await axios.post(
           "https://ironrest.herokuapp.com/cardinator/",
           newProj
         );
@@ -38,37 +39,67 @@ function NewProject() {
 
   return (
     <div>
-      <Form
+      <Card
+        className="shadow"
         style={{
+          width: "30rem",
+          borderRadius: "1rem",
+          marginBottom: "1rem",
+          marginRight: "1rem",
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginTop: "10rem",
+          position: "relative",
+          left: "30rem",
+          top: "8rem",
         }}
       >
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>
-            <strong>New Project Name</strong>
-          </Form.Label>
-          <Form.Control
-            type="form"
-            name="projectName"
-            value={newProj.projectName}
-            onChange={handleChange}
-            style={{ marginTop: "0.5rem", width: "18rem" }}
-          />
-        </Form.Group>
-        <Button
-          variant="primary"
-          onClick={() => {
-            handleSubmit();
-            navigate("/");
+        <Card.Header
+          style={{
+            height: "5rem",
+            backgroundColor: "#969696",
+            borderTopRightRadius: "1rem",
+            borderTopLeftRadius: "1rem",
           }}
-          style={{ marginTop: "3rem" }}
         >
-          Create New Project
-        </Button>
-      </Form>
+          <h3 style={{ marginTop: "1rem", color: "#fff" }}>
+            <strong>Create new project</strong>
+          </h3>
+        </Card.Header>
+        <Card.Body>
+          <Form
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: "3rem",
+            }}
+          >
+            <Form.Group controlId="exampleForm.ControlInput1">
+              <Form.Label>
+                <h5>
+                  <strong>Project Name</strong>
+                </h5>
+              </Form.Label>
+              <Form.Control
+                type="form"
+                name="projectName"
+                value={newProj.projectName}
+                onChange={handleChange}
+                style={{ marginTop: "0.5rem", width: "18rem" }}
+              />
+            </Form.Group>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                handleSubmit();
+                navigate("/");
+              }}
+              style={{ marginTop: "3rem", marginBottom: "3rem" }}
+            >
+              <strong>Create </strong>
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
     </div>
   );
 }
