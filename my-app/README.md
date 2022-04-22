@@ -1,3 +1,13 @@
+## About the Project
+Ever wondered about a website where we could organize our schedulles and daily tasks with an user friendly envirolment?
+
+Here with Cardinator you can organize your personal projects with tasks and update them as you complete them :)
+
+Come and join us and try yourself ;)
+
+### Live Server:
+https://venerable-pithivier-b8999e.netlify.app/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
