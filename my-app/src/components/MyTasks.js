@@ -7,6 +7,9 @@ import { v4 as uuidv4 } from "uuid";
 import EditTasks from "./EditTasks.js";
 import Button from "react-bootstrap/Button";
 import { useParams } from "react-router-dom";
+import { VscEdit } from "react-icons/vsc";
+import { BsTrash } from "react-icons/bs";
+import Spinner from "react-bootstrap/Spinner";
 
 function MyTasks() {
   const [selectedTask, setSelectedTask] = useState();
@@ -91,9 +94,9 @@ function MyTasks() {
     fetchTask();
   }, [id]);
 
-  async function fetchDeletion() {
+  async function fetchDeletion(selectedTask) {
     try {
-      const removeTask = await axios.delete(
+       await axios.delete(
         `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`
       );
       refreshPage();
@@ -259,7 +262,7 @@ function MyTasks() {
   return (
     <>
       {loading ? (
-        <h1 style={{ marginTop: "10rem" }}>loading...</h1>
+        <Spinner style={{height: "10rem", width: "10rem", marginTop: "15rem"}} variant="secondary" animation="border" />
       ) : (
         <div
           style={{
@@ -274,22 +277,32 @@ function MyTasks() {
           >
             {Object.entries(columns).map(([columnId, column]) => {
               return (
-                <Card style={{ borderRadius: "0.5rem", width: "21rem" }}>
-                  <Card.Header className="card-header">
+                <Card
+                  style={{ borderRadius: "0.5rem", width: "21rem" }}
+                  key={columnId}
+                >
+                  <Card.Header
+                    style={{
+                      borderTopRightRadius: "0.5rem",
+                      borderTopLeftRadius: "0.5rem",
+                      paddingtop: "1.5vh",
+                      paddingBottom: "1.5vh",
+                    }}
+                  >
                     <h5 style={{ margin: "0" }}>{column.name}</h5>
                   </Card.Header>
-                  <Card.Body>
+                  <Card.Body style={{ backgroundColor: "#ededed" }}>
                     <Droppable droppableId={columnId} key={columnId}>
                       {(droppableProvided, droppableSnapshot) => (
                         <div
                           {...droppableProvided.droppableProps}
                           ref={droppableProvided.innerRef}
+                          key={columnId}
                           style={{
                             background: droppableSnapshot.isDraggingOver
-                              ? "lightblue"
+                              ? "#d3d3d3"
                               : "#ededed",
                             width: "100%",
-                            // height: "85%",
                           }}
                           onScroll={(e) =>
                             console.log(
@@ -301,6 +314,7 @@ function MyTasks() {
                           <ul
                             className="list-group "
                             style={{ listStyle: "none" }}
+                            key={columnId}
                           >
                             {column.items?.map((currentTask, index) => (
                               <div
@@ -325,35 +339,49 @@ function MyTasks() {
                                       <li
                                         className="list-group-item mb-2"
                                         key={currentTask._id}
+                                        style={{
+                                          textAlign: "initial",
+                                          paddingRight: "3.2rem",
+                                        }}
                                       >
                                         {currentTask.name}
-                                        {column.name === "Todo" && (
-                                          <div
-                                            style={{ display: "inline-flex" }}
-                                          >
+
+                                        <div style={{ display: "inline-flex" }}>
+                                          <div>
                                             <Button
-                                              variant="secondary"
+                                              style={{
+                                                position: "absolute",
+                                                left: "16rem",
+                                                bottom: "0.3rem",
+                                                border: "none",
+                                              }}
+                                              variant="outline-secondary"
+                                              size="sm"
+                                              border="none"
                                               onClick={() =>
                                                 handleShow(currentTask._id)
                                               }
-                                            ></Button>
-                                            <input
-                                              onClick={() =>
-                                                setSelectedTask(currentTask._id)
-                                              }
-                                              className="form-check-input me-1"
-                                              type="checkbox"
-                                              value=""
-                                              aria-label="..."
+                                            >
+                                              <VscEdit />
+                                            </Button>
+                                            <Button
                                               style={{
                                                 position: "absolute",
-                                                left: "1rem",
-                                                bottom: "0.7rem",
-                                                display: "flex",
+                                                left: "14rem",
+                                                bottom: "0.3rem",
+                                                border: "none",
                                               }}
-                                            />
+                                              variant="outline-secondary"
+                                              size="sm"
+                                              border="none"
+                                              onClick={() =>
+                                                fetchDeletion(currentTask._id)
+                                              }
+                                            >
+                                              <BsTrash />
+                                            </Button>
                                           </div>
-                                        )}
+                                        </div>
                                       </li>
                                     </div>
                                   )}
@@ -371,7 +399,7 @@ function MyTasks() {
                           onChange={handleChange}
                           value={taskObj.name}
                           name="name"
-                          style={{ marginTop: "0.5rem", width: "18rem" }}
+                          style={{ marginTop: "1rem", width: "18rem" }}
                           type="form"
                         />
                         <div>

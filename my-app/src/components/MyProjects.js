@@ -6,12 +6,10 @@ import axios from "axios";
 import Graph from "./Graph";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import active from "../imgs/active-1.svg";
+import completed from "../imgs/completedface-1.svg";
+import inactive from "../imgs/inative-1.svg";
 
-// import {
-//   taskFilteredByProject,
-//   tasksFilteredByStatus,
-//   calculandoWorkProgress,
-// } from "./testandoReactComFlah";
 function taskFilteredByProject(taskList, projectId) {
   return taskList.filter((task) => task.projectId === projectId);
 }
@@ -29,7 +27,7 @@ function calculandoWorkProgress(
       100
   )}  %`;
 }
-//11-33 funcoes que fazer o processo de atualizar as tasks e o %
+
 function MyProjects() {
   const navigate = useNavigate();
   const [projectObj, setProjectObj] = useState([]);
@@ -126,41 +124,10 @@ function MyProjects() {
     inactive: "#FC599B",
   };
 
-  // const handleShow = (id) => {
-  //   setSelectedProject(id);
-  //   setShowModal(true);
-  // };
-  // const [showModal, setShowModal] = useState(false);
-  // const handleClose = () => setShowModal(false);
-
-  // function handleUpdate() {
-  //   async function fetchUpdate() {
-  //     try {
-  //       const updateProj = await axios.put(
-  //         `https://ironrest.herokuapp.com/cardinator/${selectedProject}`,
-  //         projectObj
-  //       );
-  //       refreshPage();
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   }
-  //   fetchUpdate();
-  //   handleClose();
-  // }
-
-  // function handleChange(event) {
-  //   setProjectObj({
-  //     ...projectObj,
-  //     // projectId: id,
-  //     [event.target.name]: event.target.value,
-  //   });
-  // }
-
   return (
     <div
       style={{
-        marginLeft: "12vh",
+        marginLeft: "7vh",
         marginTop: "12vh",
         display: "flex",
         flexWrap: "wrap",
@@ -189,6 +156,7 @@ function MyProjects() {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                textAlign: "center",
               }}
               as="h5"
             >
@@ -222,6 +190,8 @@ function MyProjects() {
                 >
                   Stop Project
                 </Dropdown.Item>
+                {items.status === "inactive" && (
+
                 <Dropdown.Item
                   onClick={() => {
                     let projectClone = { ...items };
@@ -234,6 +204,7 @@ function MyProjects() {
                 >
                   Restart Project
                 </Dropdown.Item>
+                )}
               </DropdownButton>
             </Card.Header>
 
@@ -245,6 +216,38 @@ function MyProjects() {
               }}
               onClick={() => navigate(`/mytasks/${items._id}`)}
             >
+              <div
+                style={{
+                  zIndex: "2",
+                  position: "absolute",
+                  bottom: "6rem",
+                  left: "4.3rem",
+                }}
+              >
+                {items.status === "active" && (
+                  <img src={active} alt="active " style={{ width: "50px" }} />
+                )}
+                {items.status === "completed" && (
+                  <img
+                    src={completed}
+                    alt="active "
+                    style={{ width: "50px", marginBottom: "0.2rem" }}
+                  />
+                )}
+                {items.status === "inactive" && (
+                  <img
+                    src={inactive}
+                    alt="active "
+                    style={{
+                      width: "50px",
+                      marginLeft: "1.2rem",
+                      position: "relative",
+                      top: "0.5rem",
+                    }}
+                  />
+                )}
+              </div>
+              <div></div>
               <div
                 style={{
                   position: "relative",
@@ -364,7 +367,7 @@ function MyProjects() {
                         tasksObj.filter((task) => task.projectId === items._id)
                           .length) *
                         100
-                    )}
+                    )}{" "}
                     %
                   </p>
 
@@ -393,14 +396,6 @@ function MyProjects() {
           </Card>
         );
       })}
-      {/* <EditProject
-            show={showModal}
-            handleClose={handleClose}
-            handleUpdate={handleUpdate}
-            handleChange={handleChange}
-            value={projectObj.name}
-            name={"name"}
-          /> */}
     </div>
   );
 }
