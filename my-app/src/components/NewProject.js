@@ -59,17 +59,9 @@ function NewProject() {
             onChange={handleChange}
             style={{ marginTop: "0.5rem", width: "18rem" }}
           />
-          <Form.Label style={{ marginTop: "1rem" }}>
-            <strong>Amount of contributors</strong>
-          </Form.Label>
-          <Form.Control
-            type="form"
-            name="{name}"
-            style={{ marginTop: "0.5rem", width: "18rem" }}
-          />
         </Form.Group>
         <Button
-          variant="primary"
+          variant="secondary"
           onClick={() => {
             handleSubmit();
             navigate("/")

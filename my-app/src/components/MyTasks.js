@@ -7,6 +7,9 @@ import { v4 as uuidv4 } from "uuid";
 import EditTasks from "./EditTasks.js";
 import Button from "react-bootstrap/Button";
 import { useParams } from "react-router-dom";
+import { VscEdit } from "react-icons/vsc";
+import { BsTrash } from "react-icons/bs";
+import Spinner from "react-bootstrap/Spinner";
 
 function MyTasks() {
   const { id } = useParams();
@@ -73,9 +76,9 @@ function MyTasks() {
     fetchTask();
   }, []);
 
-  async function fetchDeletion() {
+  async function fetchDeletion(selectedTask) {
     try {
-      const removeTask = await axios.delete(
+       await axios.delete(
         `https://ironrest.herokuapp.com/cardinatortasks/${selectedTask}`
       );
       refreshPage();
@@ -179,11 +182,11 @@ function MyTasks() {
        }
      }
   
-     console.log(taskObj);
+   
   return (
     <>
       {loading ? (
-        <h1 style={{ marginTop: "10rem" }}>loading...</h1>
+        <Spinner style={{height: "10rem", width: "10rem", marginTop: "15rem"}} variant="secondary" animation="border" />
       ) : (
         <div
           style={{
@@ -227,7 +230,10 @@ function MyTasks() {
                             style={{ listStyle: "none" }}
                           >
                             {column.items?.map((currentTask, index) => (
-                              <div key={currentTask._id} draggableId={currentTask._id}>
+                              <div
+                                key={currentTask._id}
+                                draggableId={currentTask._id}
+                              >
                                 <Draggable
                                   key={currentTask._id}
                                   draggableId={String(currentTask._id)}
@@ -246,33 +252,56 @@ function MyTasks() {
                                       <li
                                         className="list-group-item mb-2"
                                         key={currentTask._id}
+                                        style={{
+                                          textAlign: "initial",
+                                          paddingRight: "3.2rem",
+                                        }}
                                       >
                                         {currentTask.name}
                                         {column.name === "Todo" && (
                                           <div
                                             style={{ display: "inline-flex" }}
                                           >
-                                            <Button
-                                              variant="secondary"
-                                              onClick={() =>
-                                                handleShow(currentTask._id)
-                                              }
-                                            ></Button>
-                                            <input
-                                              onClick={() =>
-                                                setSelectedTask(currentTask._id)
-                                              }
-                                              className="form-check-input me-1"
-                                              type="checkbox"
-                                              value=""
-                                              aria-label="..."
-                                              style={{
-                                                position: "absolute",
-                                                left: "1rem",
-                                                bottom: "0.7rem",
-                                                display: "flex",
-                                              }}
-                                            />
+                                            {/* <Button */}
+                                            {/* variant="outline-secondary" onClick=
+                                            {() => handleShow(currentTask._id)} */}
+                                            {/* > */}
+                                            <div>
+                                              <Button
+                                                style={{
+                                                  // heigth: "0.5rem",
+                                                  position: "absolute",
+                                                  left: "16rem",
+                                                  bottom: "0.3rem",
+                                                }}
+                                                variant="outline-secondary"
+                                                size="sm"
+                                                border="none"
+                                              >
+                                                <VscEdit
+                                                  onClick={() =>
+                                                    handleShow(currentTask._id)
+                                                  }
+                                                  // style={{
+                                                  //   heigth: "1.5rem",
+                                                  //   position: "absolute",
+                                                  //   left: "17rem",
+                                                  //   bottom: "0.5rem",
+                                                  // }}
+                                                />
+                                              </Button>
+                                              <BsTrash
+                                                style={{
+                                                  position: "absolute",
+                                                  left: "15rem",
+                                                  bottom: "0.5rem",
+                                                }}
+                                                onClick={() =>
+                                                  fetchDeletion(currentTask._id)
+                                                }
+                                              />
+                                            </div>
+                                            {/* </Button> */}
                                           </div>
                                         )}
                                       </li>
@@ -307,14 +336,6 @@ function MyTasks() {
                             className="btn btn-secondary mt-2"
                           >
                             Add
-                          </button>
-                          <button
-                            className="btn btn-danger mt-2 "
-                            onClick={() => {
-                              fetchDeletion();
-                            }}
-                          >
-                            Delete
                           </button>
                         </div>
                       </div>

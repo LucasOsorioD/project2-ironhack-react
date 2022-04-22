@@ -9,7 +9,9 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton"
 import EditProject from "./EditProject";
 import MyTasks from "./MyTasks";
-
+import active from "../imgs/active-1.svg";
+import completed from "../imgs/completedface-1.svg"
+import inactive from "../imgs/inative-1.svg"
 function MyProjects() {
 
   const navigate = useNavigate();
@@ -109,20 +111,53 @@ function MyProjects() {
     "To start": "#C4C4C4",
     active: "#F9c262",
     completed: "#5DD1B3",
-    inative: "#FC599B",
+    inactive: "#FC599B",
   };
-  console.log(projectObj)
+
 
   return (
     <div
       style={{
-        marginLeft: "12vh",
+        marginLeft: "7vh",
         marginTop: "12vh",
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-around",
       }}
     >
+      {/* <DropdownButton
+        id="dropdown-basic-button"
+        title=""
+        size="sm"
+        menuVariant="light"
+        variant="black"
+      >
+        <Dropdown.Item
+          onClick={() => {
+          }}
+          href="#/action-1"
+        >
+          Active 
+        </Dropdown.Item>
+        <Dropdown.Item href="#/action-2">Completed </Dropdown.Item>
+        <Dropdown.Item
+          onClick={() => {
+            projectObj.filter((prj) => prj.status === "inative" )
+          }}
+          href="#/action-3"
+        >
+          Inative
+        </Dropdown.Item>
+       
+          <Dropdown.Item
+
+            onClick={() => {
+            }}
+            href="#/action-4"
+          >
+            To start 
+          </Dropdown.Item>
+      </DropdownButton> */}
       {projectObj.map((items) => {
         return (
           <Card
@@ -170,7 +205,7 @@ function MyProjects() {
                 <Dropdown.Item
                   onClick={() => {
                     let projectClone = { ...items };
-                    projectClone.status = "inative";
+                    projectClone.status = "inactive";
                     delete projectClone._id;
 
                     updateProject(items._id, projectClone);
@@ -179,18 +214,37 @@ function MyProjects() {
                 >
                   Stop Project
                 </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => {
-                    let projectClone = { ...items };
-                    projectClone.status = "active";
-                    delete projectClone._id;
+                {items.status === "active" && (
+                  <Dropdown.Item
+                    onClick={() => {
+                      let projectClone = { ...items };
+                      projectClone.status = "completed";
+                      delete projectClone._id;
 
-                    updateProject(items._id, projectClone);
-                  }}
-                  href="#/action-4"
-                >
-                  Restart Project
-                </Dropdown.Item>
+                      updateProject(items._id, projectClone);
+                    }}
+                    href="#/action-4"
+                  >
+                    Complete Project
+                  </Dropdown.Item>
+                )}
+
+                {(items.status === "inactive") |
+                  (items.status === "completed") |
+                  (items.status === "To start") && (
+                  <Dropdown.Item
+                    onClick={() => {
+                      let projectClone = { ...items };
+                      projectClone.status = "active";
+                      delete projectClone._id;
+
+                      updateProject(items._id, projectClone);
+                    }}
+                    href="#/action-5"
+                  >
+                    Active project
+                  </Dropdown.Item>
+                )}
               </DropdownButton>
             </Card.Header>
 
@@ -202,6 +256,29 @@ function MyProjects() {
               }}
               onClick={() => navigate(`/mytasks/${items._id}`)}
             >
+              <div
+                style={{
+                  zIndex: "2",
+                  position: "absolute",
+                  bottom: "6rem",
+                  left: "4.3rem",
+                }}
+              >
+                {items.status === "active" && (
+                  <img src={active} alt="active " style={{ width: "50px" }} />
+                )}
+                {items.status === "completed" && (
+                  <img
+                    src={completed}
+                    alt="active "
+                    style={{ width: "50px", marginBottom: "0.2rem" }}
+                  />
+                )}
+                {items.status === "inactive" && (
+                <img src={inactive} alt="active " style={{ width: "50px", marginLeft: "1.2rem", position: "relative", top:"0.5rem" }} />
+                )}
+              </div>
+              <div></div>
               <div
                 style={{
                   position: "relative",
@@ -319,6 +396,7 @@ function MyProjects() {
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
+
                     {Math.round(
                       (tasksObj.filter(
                         (task) =>
@@ -327,8 +405,7 @@ function MyProjects() {
                         tasksObj.filter((task) => task.projectId === items._id)
                           .length) *
                         100
-                    )}
-                    %
+                    )} %
                   </p>
 
                   <hr
