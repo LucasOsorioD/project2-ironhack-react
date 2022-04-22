@@ -262,7 +262,11 @@ function MyTasks() {
   return (
     <>
       {loading ? (
-        <Spinner style={{height: "10rem", width: "10rem", marginTop: "15rem"}} variant="secondary" animation="border" />
+        <Spinner
+          style={{ height: "10rem", width: "10rem", marginTop: "15rem" }}
+          variant="secondary"
+          animation="border"
+        />
       ) : (
         <div
           style={{
@@ -278,7 +282,7 @@ function MyTasks() {
             {Object.entries(columns).map(([columnId, column]) => {
               return (
                 <Card
-                  style={{ borderRadius: "0.5rem", width: "21rem" }}
+                  style={{ borderRadius: "0.5rem", width: "21rem", marginTop: "1rem" }}
                   key={columnId}
                 >
                   <Card.Header
@@ -409,14 +413,14 @@ function MyTasks() {
                             }}
                             style={{
                               marginRight: "1rem",
-                              marginLeft: "8.8rem",
+                              marginLeft: "10rem",
+                              display: "flex",
+                              position:"relative",
+                              left:"4.5rem"
                             }}
                             className="btn btn-secondary mt-2"
                           >
                             Add
-                          </button>
-                          <button onClick={() => {handleProjectUpdate()}} className="btn btn-primary mt-2">
-                            Save Changes
                           </button>
                         </div>
                       </div>
@@ -426,6 +430,27 @@ function MyTasks() {
               );
             })}
           </DragDropContext>
+          <div>
+            <button
+              onClick={() => {
+                handleProjectUpdate();
+              }}
+              className="btn btn-primary mt-2"
+              style={{
+                display: "flex",
+                position: "relative",
+                bottom: "4rem",
+                right: "14rem",
+                marginBottom: "4rem",
+                backgroundColor: "#5DD1B3",
+                border:"none",
+                marginTop:"1rem"
+              }}
+              size="sm"
+            >
+              Update work Progress
+            </button>
+          </div>
           <EditTasks
             show={showModal}
             handleClose={handleClose}
