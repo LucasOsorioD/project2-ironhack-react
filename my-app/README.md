@@ -1,7 +1,7 @@
 ## About the Project
 Ever wondered about a website where we could organize our schedulles and daily tasks with an user friendly envirolment?
 
-Here with Cardinator you can organize your personal projects with tasks and update them as you complete them :)
+Here with Cardnator you can organize your personal projects with tasks and update them as you complete them :)
 
 Come and join us and try yourself ;)
 
