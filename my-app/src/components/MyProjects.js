@@ -359,16 +359,8 @@ function MyProjects() {
                   }}
                 >
                   <p style={{ color: "#515151" }} className="mb-1">
-                    {Math.round(
-                      (tasksObj.filter(
-                        (task) =>
-                          task.projectId === items._id && task.status === "Done"
-                      ).length /
-                        tasksObj.filter((task) => task.projectId === items._id)
-                          .length) *
-                        100
-                    )}{" "}
-                    %
+                    {items.workProgress}
+                    
                   </p>
 
                   <hr
