@@ -142,7 +142,7 @@ function MyProjects() {
               width: "18rem",
               borderRadius: "1rem",
               marginBottom: "1rem",
-              marginRight: "1rem",
+              marginRight: "1rem", 
               marginLeft: "2rem"
             }}
             key={items._id}
