@@ -131,7 +131,7 @@ function MyProjects() {
         marginTop: "12vh",
         display: "flex",
         flexWrap: "wrap",
-        justifyContent: "space-around",
+        justifyContent: "flexStart",
       }}
     >
       {projectObj.map((items) => {
@@ -143,6 +143,7 @@ function MyProjects() {
               borderRadius: "1rem",
               marginBottom: "1rem",
               marginRight: "1rem",
+              marginLeft: "2rem"
             }}
             key={items._id}
           >
